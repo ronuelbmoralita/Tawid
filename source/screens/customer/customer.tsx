@@ -1,19 +1,23 @@
-import * as React from 'react';
-import { Text, View } from 'react-native';
-import {
-    useNavigation,
-} from '@react-navigation/native';
-import { Button } from '@react-navigation/elements';
+import { ScrollView, View } from 'react-native'
+import React from 'react'
+import Header from '../design/header'
+import { colors } from '../../components/colors'
+import Search from '../design/search'
+import Banner from '../design/banner'
+import Schedule from '../design/schedule'
 
-export function Customer() {
-    const navigation = useNavigation();
-
-    return (
-        <View style={{ flex: 1, backgroundColor: 'white', alignItems: 'center', justifyContent: 'center' }}>
-            <Text>Home Screen</Text>
-            <Button onPress={() => navigation.navigate('Profile')}>
-                Go to Profile
-            </Button>
-        </View>
-    );
+export default function Customer() {
+  return (
+    <View style={{
+      flex: 1,
+      backgroundColor: colors.light,
+      //backgroundColor: colors.primary,
+      gap: 15,
+    }}>
+      <Header />
+      <Search />
+      <Banner />
+      <Schedule />
+    </View>
+  )
 }
