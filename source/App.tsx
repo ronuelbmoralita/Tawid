@@ -7,14 +7,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './Login';
 import Customer from './screens/customer/customer';
 import { StatusBar } from 'expo-status-bar';
-
-function HomeScreen() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home Screen</Text>
-    </View>
-  );
-}
+import MyTab from './screens/tab';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,9 +17,9 @@ function RootStack() {
       <Stack.Screen name="Home"
         options={{
           headerShown: false
-        }} component={Customer} />
+        }} component={MyTab} />
     </Stack.Navigator>
-  ); 
+  );
 }
 
 export default function App() {
