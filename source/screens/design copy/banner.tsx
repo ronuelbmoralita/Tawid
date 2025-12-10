@@ -19,19 +19,9 @@ const BANNERS = [
   { id: '5', title: 'WEEKEND SPECIAL', image: 'https://images.unsplash.com/photo-1544441893-675973e31985?w=1600' },
 ];
 
-interface BannerProps {
-  searchQuery?: string;
-  role?: string; // Add role prop
-}
-
-const Banner = ({ searchQuery = '', role = 'Customer' }: BannerProps) => {
+const Banner = () => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList>(null);
-
-  // Hide banner if there's a search query OR if user is Admin
-  if (searchQuery.length > 0 || role === 'Admin') {
-    return null;
-  }
 
   const renderItem = ({ item }: { item: typeof BANNERS[0] }) => (
     <>

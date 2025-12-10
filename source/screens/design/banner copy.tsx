@@ -21,15 +21,14 @@ const BANNERS = [
 
 interface BannerProps {
   searchQuery?: string;
-  role?: string; // Add role prop
 }
 
-const Banner = ({ searchQuery = '', role = 'Customer' }: BannerProps) => {
+const Banner = ({ searchQuery = '' }: BannerProps) => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef<FlatList>(null);
 
-  // Hide banner if there's a search query OR if user is Admin
-  if (searchQuery.length > 0 || role === 'Admin') {
+  // Hide banner if there's a search query
+  if (searchQuery.length > 0) {
     return null;
   }
 
