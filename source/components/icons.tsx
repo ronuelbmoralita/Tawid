@@ -1,7 +1,7 @@
 // components/Icon.tsx
 import React from 'react';
 import { View, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import FontAwesome from '@expo/vector-icons/FontAwesome6';
 
 export type IconProps = {
   name: React.ComponentProps<typeof FontAwesome>['name'];

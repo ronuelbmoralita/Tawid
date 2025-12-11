@@ -9,21 +9,21 @@ const DAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 export function useScheduleForm() {
   const [formVisible, setFormVisible] = useState(false);
   const [editingItem, setEditingItem] = useState<any>(null);
-  
+
   const openForm = (item = null) => {
     setEditingItem(item);
     setFormVisible(true);
   };
-  
+
   const closeForm = () => {
     setFormVisible(false);
     setEditingItem(null);
   };
-  
+
   return { formVisible, editingItem, openForm, closeForm };
 }
 
-export default function ScheduleFormModal({ 
+export default function ScheduleFormModal({
   role = 'Customer',
   formVisible,
   editingItem,
@@ -33,7 +33,8 @@ export default function ScheduleFormModal({
 }: any) {
   const [form, setForm] = useState({
     boatName: '', from: '', to: '', price: '', time: '06:00 AM',
-    boatType: 'Fastcraft', note: '', status: 'Available', weeklySchedule: []
+    boatType: 'Fastcraft', note: '', status: 'Available', weeklySchedule: [],
+    capacity: '',
   });
 
   useEffect(() => {
@@ -47,26 +48,28 @@ export default function ScheduleFormModal({
         boatType: editingItem.boatType || 'Fastcraft',
         note: editingItem.note || '',
         status: editingItem.status || 'Available',
-        weeklySchedule: editingItem.weeklySchedule || []
+        weeklySchedule: editingItem.weeklySchedule || [],
+        capacity: String(editingItem.capacity || ''),
       });
     } else {
       setForm({
         boatName: '', from: '', to: '', price: '', time: '06:00 AM',
-        boatType: 'Fastcraft', note: '', status: 'Available', weeklySchedule: []
+        boatType: 'Fastcraft', note: '', status: 'Available', weeklySchedule: [],
+        capacity: '',
       });
     }
   }, [editingItem]);
 
   const handleSubmit = () => {
-    if (!form.boatName || !form.from || !form.to || !form.price || !form.time) {
+    if (!form.boatName || !form.from || !form.to || !form.price || !form.time || !form.capacity) {
       alert('Please fill in all required fields'); return;
     }
-    
+
     const formData = {
       ...form,
       price: parseInt(form.price) || 0
     };
-    
+
     onSubmit(formData);
   };
 
@@ -87,13 +90,13 @@ export default function ScheduleFormModal({
       <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
         <View style={{ backgroundColor: 'white', borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '90%', paddingBottom: Platform.OS === 'ios' ? 40 : 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: '#eee' }}>
-              <Text style={{ fontSize: 20, fontWeight: '700', color: colors.dark }}>
-                {editingItem ? 'Edit Schedule' : 'Add New Schedule'}
-              </Text>
-              <TouchableOpacity onPress={onClose}>
-                <Icon name="close" size={24} color={colors.dark} />
-              </TouchableOpacity>
-            </View>
+            <Text style={{ fontSize: 20, fontWeight: '700', color: colors.dark }}>
+              {editingItem ? 'Edit Schedule' : 'Add New Schedule'}
+            </Text>
+            <TouchableOpacity onPress={onClose}>
+              <Icon name="close" size={24} color={colors.dark} />
+            </TouchableOpacity>
+          </View>
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={{ marginBottom: 16, paddingHorizontal: 20 }}>
               <Text style={{ fontSize: 14, fontWeight: '600', color: colors.dark, marginBottom: 8 }}>Boat Name *</Text>
@@ -102,6 +105,16 @@ export default function ScheduleFormModal({
                 value={form.boatName}
                 onChangeText={(text) => setForm(prev => ({ ...prev, boatName: text }))}
                 placeholder="Enter boat name"
+              />
+            </View>
+
+            <View style={{ marginBottom: 16, paddingHorizontal: 20 }}>
+              <Text style={{ fontSize: 14, fontWeight: '600', color: colors.dark, marginBottom: 8 }}>Capacity *</Text>
+              <TextInput
+                style={{ borderWidth: 1, borderColor: '#ddd', borderRadius: 8, paddingHorizontal: 12, paddingVertical: 10, fontSize: 16, color: colors.dark }}
+                value={form.capacity}
+                onChangeText={(text) => setForm(prev => ({ ...prev, capacity: text }))}
+                placeholder="Enter capacity"
               />
             </View>
 
