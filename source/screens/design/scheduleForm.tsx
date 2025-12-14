@@ -94,7 +94,7 @@ export default function ScheduleFormModal({
               {editingItem ? 'Edit Schedule' : 'Add New Schedule'}
             </Text>
             <TouchableOpacity onPress={onClose}>
-              <Icon name="close" size={24} color={colors.dark} />
+              <Icon name="xmark" size={24} color={colors.dark} />
             </TouchableOpacity>
           </View>
           <ScrollView showsVerticalScrollIndicator={false}>

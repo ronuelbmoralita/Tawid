@@ -1,4 +1,4 @@
-package com.lookal.tawid
+package com.lookal.app
 
 import android.app.Application
 import android.content.res.Configuration

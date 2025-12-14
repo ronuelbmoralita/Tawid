@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "982156955950",
+    "project_id": "lookal-f8f2f",
+    "storage_bucket": "lookal-f8f2f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:982156955950:android:b73a9d4f55f47a8ac56abf",
+        "android_client_info": {
+          "package_name": "com.lookal.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "982156955950-1reumiv6sp3l9dod01dgebt5pi73uoc8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lookal.app",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "982156955950-ffj1sp8239ek30cfon6l5m5anns5kkqi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAley2e_vcbeE_XA5kabfFcEnho5LuFe-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "982156955950-ffj1sp8239ek30cfon6l5m5anns5kkqi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

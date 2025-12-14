@@ -95,7 +95,7 @@ export default function Search({ onSearchChange, onFilterChange }: SearchProps) 
         }}>
           {/* Magnifying Glass Icon */}
           <Icon
-            name="search"
+            name="magnifying-glass"
             size={20}
             color={colors.primary}
             style={{

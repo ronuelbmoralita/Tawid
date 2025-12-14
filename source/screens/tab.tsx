@@ -6,6 +6,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Animated } from 'react-native';
 
 import Customer from './customer/customer'; // Your existing Customer navigator/component
+import Profile from './profile/profile';
 
 const Tab = createBottomTabNavigator();
 
@@ -96,13 +97,6 @@ function AnimatedTabBar({ state, descriptors, navigation }: any) {
 // ──────────────────────────────────────────────────
 // Profile Screen (simple example)
 // ──────────────────────────────────────────────────
-function ProfileScreen() {
-  return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={{ fontSize: 28, fontWeight: 'bold' }}>Profile Screen</Text>
-    </View>
-  );
-}
 
 // ──────────────────────────────────────────────────
 // Styles
@@ -123,9 +117,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 20,
     elevation: 10,
-    position:'absolute',
-    bottom:0,
-    width:'90%'
+    position: 'absolute',
+    bottom: 0,
+    width: '90%'
   },
   tabButtonContainer: {
     flex: 1,
@@ -162,7 +156,7 @@ export default function MyTabs() {
     >
       {/* Unique name to avoid conflict */}
       <Tab.Screen name="Main" component={Customer} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Profile" component={Profile} />
     </Tab.Navigator>
   );
 }

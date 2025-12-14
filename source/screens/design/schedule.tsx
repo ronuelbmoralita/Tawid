@@ -86,6 +86,7 @@ export default function Schedule({ role, searchQuery = '', filters }: SchedulePr
 
     const allDays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const statusColor = item.status === 'Available' ? colors.success : colors.error;
+    const statusIcon = item.status === 'Available' ? 'check-circle' : 'ban';
 
     return (
       <View style={{ padding: 16, borderRadius: 16, gap: 6, backgroundColor: 'white', ...shadowStyles.softShadow }}>
@@ -106,7 +107,7 @@ export default function Schedule({ role, searchQuery = '', filters }: SchedulePr
               key: 'status',
               label: 'Status',
               value: item.status,
-              icon: 'dot-circle', // Replace with actual icon name
+              icon: statusIcon, // Replace with actual icon name
               color: statusColor,
             },
             {

@@ -9,20 +9,10 @@ import {
   TouchableOpacity,
   Animated,
   Alert,
-  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { colors } from './components/colors';
-import {
-  GoogleSignin,
-  isErrorWithCode,
-  isSuccessResponse,
-  statusCodes,
-} from '@react-native-google-signin/google-signin';
-import { auth, firestore } from '../firebaseConfig';
-import { GoogleAuthProvider, signInWithCredential } from 'firebase/auth';
-import { doc, setDoc, getDoc, serverTimestamp } from 'firebase/firestore';
 
 const { width } = Dimensions.get('window');
 
@@ -39,21 +29,21 @@ const ONBOARDING_DATA = [
     title: 'For Passengers',
     desc: 'Hindi mo na kailangan mag-check sa Facebook o magtanong kung anong schedule today. Makikita mo agad ang boat schedules, operators, routes, availability, ticket prices, at real-time status. May weather updates at advisories pa.',
     icon: 'user',
-    color: colors.medium,
+    color: colors.medium, // replaced secondary
   },
   {
     id: '3',
     title: 'For LGU & Port Staff',
     desc: 'Hindi na kailangan mag-manual post sa social media o sagutin lagi ang same questions. Sa Tawid, puwede niyo agad i-update ang schedules, boat status, mag-send ng advisories, at kontrolin ang app visibility — lahat sa isang click lang.',
     icon: 'shield',
-    color: colors.dark,
+    color: colors.dark, // replaced accent
   },
   {
     id: '4',
     title: 'Easy Google Login',
     desc: 'Secure at mabilis na access gamit ang Google account — para sa passengers o port staff, instant na makikita ang schedules o dashboard.',
     icon: 'right-to-bracket',
-    color: colors.primary,
+    color: colors.primary, // replaced success
   },
 ];
 
@@ -67,21 +57,12 @@ const Graphic = ({ isLast, iconName }) => (
   </View>
 );
 
-export default function Login({ navigation }) {
+export default function Login() {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
   const scrollX = useRef(new Animated.Value(0)).current;
   const slidesRef = useRef(null);
-  const buttonWidth = useRef(new Animated.Value(56)).current;
 
-  // Configure Google Sign-In
-  useEffect(() => {
-    GoogleSignin.configure({
-      webClientId: '982156955950-ffj1sp8239ek30cfon6l5m5anns5kkqi.apps.googleusercontent.com',
-      offlineAccess: true,
-      forceCodeForRefreshToken: true,
-    });
-  }, []);
+  const buttonWidth = useRef(new Animated.Value(56)).current;
 
   useEffect(() => {
     const toValue = currentIndex === ONBOARDING_DATA.length - 1 ? 200 : 56;
@@ -93,90 +74,16 @@ export default function Login({ navigation }) {
     }).start();
   }, [currentIndex]);
 
- const handleGoogleSignIn = async () => {
-  setIsLoading(true);
-  try {
-    // Check for Google Play Services
-    await GoogleSignin.hasPlayServices();
-    
-    // Sign in with Google
-    const response = await GoogleSignin.signIn();
-    
-    if (isSuccessResponse(response)) {
-      const { idToken } = response.data;
-      const userInfo = response.data.user;
-      
-      // Create Google credential
-      const googleCredential = GoogleAuthProvider.credential(idToken);
-      
-      // Sign in to Firebase with the Google credential
-      const userCredential = await signInWithCredential(auth, googleCredential);
-      const firebaseUser = userCredential.user;
-      
-      // Reference to the user document in Firestore
-      const userDocRef = doc(firestore, 'users', firebaseUser.uid);
-      
-      // Check if user already exists
-      const userDoc = await getDoc(userDocRef);
-      
-      if (!userDoc.exists()) {
-        // New user - create document with full details
-        await setDoc(userDocRef, {
-          uid: firebaseUser.uid,
-          email: userInfo.email,
-          name: userInfo.name,
-          photoURL: userInfo.photo || '',
-          role: 'passenger', // Default role
-          createdAt: serverTimestamp(),
-          lastLoginAt: serverTimestamp(),
-        });
-        
-        console.log('New user created in Firestore');
-      } else {
-        // Existing user - update last login
-        await setDoc(userDocRef, {
-          lastLoginAt: serverTimestamp(),
-          email: userInfo.email,
-          name: userInfo.name,
-          photoURL: userInfo.photo || '',
-        }, { merge: true });
-        
-        console.log('User login updated in Firestore');
-      }
-      
-      // Navigate to main app
-      navigation.replace('Tab'); // or your main screen name
-      
-    } else {
-      // Sign in was cancelled by user
-      Alert.alert('Cancelled', 'Sign in was cancelled');
-    }
-  } catch (error) {
-    console.error('Sign in error:', error);
-    
-    if (isErrorWithCode(error)) {
-      switch (error.code) {
-        case statusCodes.IN_PROGRESS:
-          Alert.alert('Error', 'Sign in already in progress');
-          break;
-        case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-          Alert.alert('Error', 'Google Play Services not available or outdated');
-          break;
-        default:
-          Alert.alert('Error', 'An error occurred during sign in');
-      }
-    } else {
-      Alert.alert('Error', 'Failed to sign in. Please try again.');
-    }
-  } finally {
-    setIsLoading(false);
-  }
-};
+  const handleLogin = () =>
+    Alert.alert('Login with Google', 'Connect your Google account to Tawid?', [
+      { text: 'Cancel', style: 'cancel' },
+      { text: 'Continue', onPress: () => console.log('Google login initiated') },
+    ]);
 
   const scrollTo = () => {
     currentIndex < ONBOARDING_DATA.length - 1
       ? slidesRef.current.scrollToIndex({ index: currentIndex + 1 })
-      : handleGoogleSignIn();
+      : handleLogin();
   };
 
   const renderItem = ({ item, index }) => (
@@ -227,11 +134,9 @@ export default function Login({ navigation }) {
           })}
         </View>
 
-        <TouchableOpacity activeOpacity={0.8} onPress={scrollTo} disabled={isLoading}>
+        <TouchableOpacity activeOpacity={0.8} onPress={scrollTo}>
           <Animated.View style={[styles.nextButton, { width: buttonWidth }]}>
-            {isLoading ? (
-              <ActivityIndicator color={colors.white} size="small" />
-            ) : currentIndex === ONBOARDING_DATA.length - 1 ? (
+            {currentIndex === ONBOARDING_DATA.length - 1 ? (
               <View style={styles.loginButtonContent}>
                 <FontAwesome6 name="google" size={20} color={colors.white} />
                 <Text style={styles.loginButtonText}>Login with Google</Text>
