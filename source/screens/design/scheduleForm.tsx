@@ -86,7 +86,7 @@ export default function ScheduleFormModal({
   if (!formVisible) return null;
 
   return (
-    <Modal animationType="slide" transparent visible={formVisible} onRequestClose={onClose}>
+    <Modal animationType="fade" transparent visible={formVisible} onRequestClose={onClose}>
       <View style={{ flex: 1, justifyContent: 'flex-end', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
         <View style={{ backgroundColor: 'white', borderTopLeftRadius: 20, borderTopRightRadius: 20, maxHeight: '90%', paddingBottom: Platform.OS === 'ios' ? 40 : 20 }}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: '#eee' }}>

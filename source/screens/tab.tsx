@@ -1,18 +1,15 @@
 import * as React from 'react';
-import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { Animated } from 'react-native';
 
-import Customer from './customer/customer'; // Your existing Customer navigator/component
+import Customer from './customer/customer';
 import Profile from './profile/profile';
+import { colors } from '../components/colors';
 
 const Tab = createBottomTabNavigator();
 
-// ──────────────────────────────────────────────────
-// Custom Animated Tab Bar (pure Animated API)
-// ──────────────────────────────────────────────────
 function AnimatedTabBar({ state, descriptors, navigation }: any) {
   return (
     <View style={styles.tabBar}>
@@ -35,7 +32,6 @@ function AnimatedTabBar({ state, descriptors, navigation }: any) {
         // Icon & Label logic
         const iconName =
           route.name === 'Main' ? 'home-outline' : 'person-outline';
-
         const displayLabel = route.name === 'Main' ? 'Home' : 'Profile';
 
         // Animated values (one set per tab)
@@ -65,8 +61,7 @@ function AnimatedTabBar({ state, descriptors, navigation }: any) {
             key={route.key}
             activeOpacity={0.8}
             onPress={onPress}
-            style={styles.tabButtonContainer}
-          >
+            style={styles.tabButtonContainer}>
             <Animated.View style={[styles.pill, { width: widthAnim, backgroundColor }]}>
               {/* Icon */}
               <Animated.View style={{ transform: [{ translateX: iconX }] }}>
@@ -94,13 +89,6 @@ function AnimatedTabBar({ state, descriptors, navigation }: any) {
   );
 }
 
-// ──────────────────────────────────────────────────
-// Profile Screen (simple example)
-// ──────────────────────────────────────────────────
-
-// ──────────────────────────────────────────────────
-// Styles
-// ──────────────────────────────────────────────────
 const styles = StyleSheet.create({
   tabBar: {
     flexDirection: 'row',
@@ -142,21 +130,37 @@ const styles = StyleSheet.create({
   },
 });
 
-// ──────────────────────────────────────────────────
-// Main Tab Navigator (export this)
-// ──────────────────────────────────────────────────
 export default function MyTabs() {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerShown: false,
-        tabBarStyle: { display: 'none' }, // hide default bar
+        tabBarStyle: { display: 'none' },
       }}
       tabBar={(props) => <AnimatedTabBar {...props} />}
     >
-      {/* Unique name to avoid conflict */}
-      <Tab.Screen name="Main" component={Customer} />
-      <Tab.Screen name="Profile" component={Profile} />
+      {/* Hide header only for Home/Main tab */}
+      <Tab.Screen
+        name="Main"
+        component={Customer}
+        options={{
+          headerShown: false, // Hide header for Home
+        }}
+      />
+
+      {/* Show header for Profile tab */}
+      <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          headerShown: true, // Show header for Profile
+          headerTitle: 'My Profile',
+          headerStyle: {
+            backgroundColor: colors.light,
+          },
+          headerShadowVisible: false,
+          headerTintColor: '#333',
+        }}
+      />
     </Tab.Navigator>
   );
 }

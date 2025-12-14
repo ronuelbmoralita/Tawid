@@ -1,48 +1,35 @@
-// App.tsx
-import React, { createContext, useEffect, useState } from 'react';
+// App.js
+import * as React from 'react';
 import { View, ActivityIndicator } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { StatusBar } from 'expo-status-bar';
-import { onAuthStateChanged, User } from 'firebase/auth';
-
 import Login from './Login';
 import MyTab from './screens/tab';
+import { StatusBar } from 'expo-status-bar';
 import { auth } from '../firebaseConfig';
+import { onAuthStateChanged, User } from 'firebase/auth';
 import { colors } from './components/colors';
-
-/* =========================
-   Auth Context
-========================= */
-
-export type AuthContextType = {
-  user: User | null;
-};
-
-export const AuthContext = createContext<AuthContextType>({
-  user: null,
-});
-
-/* =========================
-   Navigation
-========================= */
+import { LoadingProvider } from '../loading';
 
 const Stack = createNativeStackNavigator();
 
 function RootStack() {
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = React.useState<User | null>(null);
+  const [loading, setLoading] = React.useState(true);
 
-  useEffect(() => {
+  React.useEffect(() => {
+    // Listen for auth state changes
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
     });
 
+    // Cleanup listener on unmount
     return unsubscribe;
   }, []);
 
   if (loading) {
+    // Loading screen while checking auth
     return (
       <View
         style={{
@@ -58,27 +45,23 @@ function RootStack() {
   }
 
   return (
-    <AuthContext.Provider value={{ user }}>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {user ? (
-          <Stack.Screen name="Tab" component={MyTab} />
-        ) : (
-          <Stack.Screen name="Login" component={Login} />
-        )}
-      </Stack.Navigator>
-    </AuthContext.Provider>
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {user ? (
+        <Stack.Screen name="Tab" component={MyTab} />
+      ) : (
+        <Stack.Screen name="Login" component={Login} />
+      )}
+    </Stack.Navigator>
   );
 }
-
-/* =========================
-   App Entry
-========================= */
 
 export default function App() {
   return (
     <NavigationContainer>
-      <StatusBar style="dark" />
-      <RootStack />
+      <LoadingProvider>
+        <StatusBar style="dark" />
+        <RootStack />
+      </LoadingProvider>
     </NavigationContainer>
   );
 }
