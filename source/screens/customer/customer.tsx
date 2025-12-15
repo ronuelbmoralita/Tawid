@@ -6,7 +6,7 @@ import Search, { FilterState } from '../design/search'
 import Banner from '../design/banner'
 import Schedule from '../design/schedule'
 
-export default function Customer() {
+export default function Customer({ userData }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState<FilterState>({
     boatTypes: [],
@@ -22,13 +22,13 @@ export default function Customer() {
       gap: 15,
     }}>
       <Header />
-      <Search 
+      <Search
         onSearchChange={setSearchQuery}
         onFilterChange={setFilters}
       />
-      <Banner searchQuery={searchQuery} role={'Admin'} />
-      <Schedule 
-        role={'Admin'} 
+      <Banner searchQuery={searchQuery} role={userData?.role} />
+      <Schedule
+        role={userData?.role}
         searchQuery={searchQuery}
         filters={filters}
       />

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { Animated } from 'react-native';
@@ -7,6 +7,8 @@ import { Animated } from 'react-native';
 import Customer from './customer/customer';
 import Profile from './profile/profile';
 import { colors } from '../components/colors';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, firestore } from '../../firebaseConfig';
 
 const Tab = createBottomTabNavigator();
 
@@ -130,7 +132,49 @@ const styles = StyleSheet.create({
   },
 });
 
+interface UserData {
+  name?: string;
+  email?: string;
+  photo?: string;
+  role?: string;
+  createdAt?: any;
+  lastLoginAt?: any;
+}
+
 export default function MyTabs() {
+  const [userData, setUserData] = React.useState<UserData | null>(null);
+  const currentUser = auth.currentUser;
+
+  React.useEffect(() => {
+    if (!currentUser) {
+      Alert.alert('Not Logged In', 'Please log in to view your profile.');
+      return;
+    }
+
+    const fetchUserData = async () => {
+      try {
+        const userDoc = await getDoc(doc(firestore, 'users', currentUser.uid));
+        if (userDoc.exists()) {
+          setUserData(userDoc.data() as UserData);
+        } else {
+          setUserData({
+            name: currentUser.displayName ?? 'User',
+            email: currentUser.email ?? '',
+            photo: currentUser.photoURL ?? '',
+            role: 'Passenger',
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+        Alert.alert('Error', 'Failed to load profile data.');
+      } finally {
+       return;
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -138,29 +182,22 @@ export default function MyTabs() {
       }}
       tabBar={(props) => <AnimatedTabBar {...props} />}
     >
-      {/* Hide header only for Home/Main tab */}
-      <Tab.Screen
-        name="Main"
-        component={Customer}
-        options={{
-          headerShown: false, // Hide header for Home
-        }}
-      />
+      <Tab.Screen name="Main" options={{ headerShown: false }}>
+        {() => <Customer userData={userData} />}
+      </Tab.Screen>
 
-      {/* Show header for Profile tab */}
       <Tab.Screen
         name="Profile"
-        component={Profile}
         options={{
-          headerShown: true, // Show header for Profile
+          headerShown: true,
           headerTitle: 'My Profile',
-          headerStyle: {
-            backgroundColor: colors.light,
-          },
+          headerStyle: { backgroundColor: colors.light },
           headerShadowVisible: false,
           headerTintColor: '#333',
         }}
-      />
+      >
+        {() => <Profile userData={userData} />}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 }

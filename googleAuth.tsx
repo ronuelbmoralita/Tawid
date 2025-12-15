@@ -81,8 +81,13 @@ export const googleLogin = async (callback?: LoginCallback): Promise<void> => {
     // Fire-and-forget – does not block UI
     const userDocRef = doc(firestore, 'users', firebaseUser.uid);
 
+    function generateUserCode(): string {
+      const random = Math.random().toString(36).substring(2, 7).toUpperCase();
+      return `TAWID-${random}`;
+    }
+
     getDoc(userDocRef)
-      .then((snap) => {
+      .then(async (snap) => {
         const baseData = {
           email: userInfo.email ?? firebaseUser.email,
           name: userInfo.name ?? firebaseUser.displayName ?? 'User',
@@ -91,11 +96,14 @@ export const googleLogin = async (callback?: LoginCallback): Promise<void> => {
         };
 
         if (!snap.exists()) {
-          // New user
+          // New user - generate code (optimistic, no check)
+          const code = generateUserCode();
+
           return setDoc(userDocRef, {
             ...baseData,
             uid: firebaseUser.uid,
-            role: 'Passenger', // default role
+            code,
+            role: 'Customer',
             createdAt: serverTimestamp(),
           });
         } else {
@@ -103,10 +111,6 @@ export const googleLogin = async (callback?: LoginCallback): Promise<void> => {
           return setDoc(userDocRef, baseData, { merge: true });
         }
       })
-      .catch((err) => {
-        console.error('Firestore user sync failed:', err);
-        // Non-critical – don't interrupt user experience
-      });
   } catch (error) {
     console.error('Google login error:', error);
 

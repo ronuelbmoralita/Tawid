@@ -3,7 +3,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   FlatList,
   Dimensions,
   TouchableOpacity,
@@ -14,7 +13,7 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { colors } from './components/colors';
 import { googleLogin } from '../googleAuth';
 import { useLoading } from '../loading';
-
+import { shadowStyles } from './components/shadow';
 
 const { width } = Dimensions.get('window');
 
@@ -50,9 +49,33 @@ const ONBOARDING_DATA = [
 ];
 
 const Graphic = ({ isLast, iconName }) => (
-  <View style={styles.graphicWrapper}>
-    <View style={styles.graphicCircle}>
-      <View style={styles.graphicInnerCircle}>
+  <View style={{
+    width: 200,
+    height: 200,
+    justifyContent: 'center',
+    alignItems: 'center',
+  }}>
+    <View style={{
+      width: 160,
+      height: 160,
+      borderRadius: 80,
+      backgroundColor: colors.primary,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: colors.primary,
+      shadowOffset: { width: 0, height: 8 },
+      shadowOpacity: 0.3,
+      shadowRadius: 16,
+      elevation: 8,
+    }}>
+      <View style={{
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        backgroundColor: colors.white,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
         <FontAwesome6 name={iconName} size={48} color={isLast ? colors.white : colors.primary} />
       </View>
     </View>
@@ -60,7 +83,6 @@ const Graphic = ({ isLast, iconName }) => (
 );
 
 export default function Login() {
-
   const { showLoading, hideLoading } = useLoading();
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -81,14 +103,11 @@ export default function Login() {
   const handleGoogleLogin = () => {
     googleLogin((result) => {
       if (result.start) {
-        // Start loading
         showLoading();
       } else if (result.success) {
-        // Login completed - hide loading and navigate
         hideLoading();
         console.log('Login successful!', result.user);
       } else {
-        // Cancelled or error - hide loading
         hideLoading();
         console.log('Login failed:', result.error);
       }
@@ -104,19 +123,47 @@ export default function Login() {
   };
 
   const renderItem = ({ item, index }) => (
-    <View style={styles.slide}>
-      <View style={[styles.graphicContainer, { backgroundColor: index % 2 === 0 ? colors.light : colors.white }]}>
+    <View style={{ width }}>
+      <View style={{
+        height: '60%',
+        padding: 24,
+        paddingTop: 32,
+        borderRadius: 28,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginHorizontal: 24,
+        marginTop: 32,
+        backgroundColor: index % 2 === 0 ? colors.light : colors.white,
+      }}>
         <Graphic isLast={index === ONBOARDING_DATA.length - 1} iconName={item.icon} />
       </View>
-      <View style={styles.contentContainer}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.description}>{item.desc}</Text>
+      <View style={{
+        padding: 24,
+        paddingTop: 32,
+      }}>
+        <Text style={{
+          fontSize: 32,
+          fontWeight: '800',
+          color: colors.dark,
+          marginBottom: 16,
+          textAlign:'center',
+        }}>
+          {item.title}
+        </Text>
+        <Text style={{
+          fontSize: 16,
+          color: colors.dark,
+          lineHeight: 24,
+          opacity: 0.8,
+        }}>
+          {item.desc}
+        </Text>
       </View>
     </View>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.light }}>
       <FlatList
         data={ONBOARDING_DATA}
         renderItem={renderItem}
@@ -124,26 +171,55 @@ export default function Login() {
         showsHorizontalScrollIndicator={false}
         pagingEnabled
         keyExtractor={(item) => item.id}
-        onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], { useNativeDriver: false })}
-        onViewableItemsChanged={({ viewableItems }) => viewableItems[0] && setCurrentIndex(viewableItems[0].index)}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+          { useNativeDriver: false }
+        )}
+        onViewableItemsChanged={({ viewableItems }) => 
+          viewableItems[0] && setCurrentIndex(viewableItems[0].index)
+        }
         viewabilityConfig={{ viewAreaCoveragePercentThreshold: 50 }}
         ref={slidesRef}
         scrollEventThrottle={32}
       />
 
-      <View style={styles.bottomContainer}>
-        <View style={styles.indicatorContainer}>
+      <View style={{
+        flexDirection: 'row',
+        paddingHorizontal: 24,
+        paddingBottom: 32,
+        paddingTop: 20,
+        backgroundColor: colors.light,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}>
+        <View style={{
+          flexDirection: 'row',
+          flex: 1,
+          marginRight: 16,
+        }}>
           {ONBOARDING_DATA.map((_, i) => {
             const inputRange = [(i - 1) * width, i * width, (i + 1) * width];
             return (
               <Animated.View
                 key={i}
                 style={[
-                  styles.indicator,
                   {
-                    width: scrollX.interpolate({ inputRange, outputRange: [8, 20, 8], extrapolate: 'clamp' }),
-                    opacity: scrollX.interpolate({ inputRange, outputRange: [0.3, 1, 0.3], extrapolate: 'clamp' }),
+                    height: 6,
+                    borderRadius: 50,
+                    marginHorizontal: 2,
                     backgroundColor: colors.primary,
+                  },
+                  {
+                    width: scrollX.interpolate({
+                      inputRange,
+                      outputRange: [8, 20, 8],
+                      extrapolate: 'clamp',
+                    }),
+                    opacity: scrollX.interpolate({
+                      inputRange,
+                      outputRange: [0.3, 1, 0.3],
+                      extrapolate: 'clamp',
+                    }),
                   },
                 ]}
               />
@@ -152,11 +228,33 @@ export default function Login() {
         </View>
 
         <TouchableOpacity activeOpacity={0.8} onPress={scrollTo}>
-          <Animated.View style={[styles.nextButton, { width: buttonWidth }]}>
+          <Animated.View style={[
+            {
+              height: 56,
+              borderRadius: 28,
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: colors.primary,
+              elevation: 3,
+            },
+            { width: buttonWidth },
+            shadowStyles.softShadow,
+          ]}>
             {currentIndex === ONBOARDING_DATA.length - 1 ? (
-              <View style={styles.loginButtonContent}>
+              <View style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 12,
+                paddingHorizontal: 8,
+              }}>
                 <FontAwesome6 name="google" size={20} color={colors.white} />
-                <Text style={styles.loginButtonText}>Login with Google</Text>
+                <Text style={{
+                  color: colors.white,
+                  fontSize: 16,
+                  fontWeight: '700',
+                }}>
+                  Login with Google
+                </Text>
               </View>
             ) : (
               <FontAwesome6 name="chevron-right" size={24} color={colors.white} />
@@ -167,21 +265,3 @@ export default function Login() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.light },
-  slide: { width },
-  graphicWrapper: { width: 200, height: 200, justifyContent: 'center', alignItems: 'center' },
-  graphicCircle: { width: 160, height: 160, borderRadius: 80, backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center', shadowColor: colors.primary, shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.3, shadowRadius: 16, elevation: 8 },
-  graphicInnerCircle: { width: 100, height: 100, borderRadius: 50, backgroundColor: colors.white, justifyContent: 'center', alignItems: 'center' },
-  graphicContainer: { height: '60%', padding: 24, paddingTop: 32, borderRadius: 28, justifyContent: 'center', alignItems: 'center', marginHorizontal: 24, marginTop: 32 },
-  contentContainer: { padding: 24, paddingTop: 32 },
-  title: { fontSize: 32, fontWeight: '800', color: colors.dark, marginBottom: 16 },
-  description: { fontSize: 16, color: colors.dark, lineHeight: 24, opacity: 0.8 },
-  bottomContainer: { flexDirection: 'row', paddingHorizontal: 24, paddingBottom: 32, paddingTop: 20, backgroundColor: colors.light, justifyContent: 'center', alignItems: 'center' },
-  indicatorContainer: { flexDirection: 'row', flex: 1, marginRight: 16 },
-  indicator: { height: 6, borderRadius: 50, marginHorizontal: 2 },
-  nextButton: { height: 56, borderRadius: 28, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.primary, elevation: 3 },
-  loginButtonContent: { flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 8 },
-  loginButtonText: { color: colors.white, fontSize: 16, fontWeight: '700' },
-});
