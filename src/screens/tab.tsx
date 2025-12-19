@@ -1,20 +1,39 @@
 import * as React from 'react';
-import { View, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, TouchableOpacity, Alert } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { Animated } from 'react-native';
 
-import Customer from './customer/customer';
+import Home from './home/home';
 import Profile from './profile/profile';
 import { colors } from '../components/colors';
-import { doc, getDoc } from 'firebase/firestore';
-import { auth, firestore } from '../../firebaseConfig';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { auth, firestore } from '../firebase/firebaseConfig';
+import { useLoading } from '../../loading';
 
 const Tab = createBottomTabNavigator();
 
 function AnimatedTabBar({ state, descriptors, navigation }: any) {
   return (
-    <View style={styles.tabBar}>
+    <View style={{
+      flexDirection: 'row',
+      backgroundColor: 'rgba(64, 224, 208, 1)', // turquoise
+      marginHorizontal: 20,
+      margin: 20,
+      height: 80,
+      borderRadius: 100,
+      paddingHorizontal: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 10 },
+      shadowOpacity: 0.12,
+      shadowRadius: 20,
+      elevation: 10,
+      position: 'absolute',
+      bottom: 0,
+      width: '90%'
+    }}>
       {state.routes.map((route: any, index: number) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
@@ -63,8 +82,22 @@ function AnimatedTabBar({ state, descriptors, navigation }: any) {
             key={route.key}
             activeOpacity={0.8}
             onPress={onPress}
-            style={styles.tabButtonContainer}>
-            <Animated.View style={[styles.pill, { width: widthAnim, backgroundColor }]}>
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Animated.View style={{
+              width: widthAnim,
+              backgroundColor,
+              height: 50,
+              borderRadius: 100,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingHorizontal: 12,
+              overflow: 'hidden',
+            }}>
               {/* Icon */}
               <Animated.View style={{ transform: [{ translateX: iconX }] }}>
                 <Ionicons name={iconName} size={24} color={isFocused ? '#000' : '#888'} />
@@ -72,15 +105,14 @@ function AnimatedTabBar({ state, descriptors, navigation }: any) {
 
               {/* Label */}
               <Animated.Text
-                style={[
-                  styles.label,
-                  {
-                    opacity: textOpacity,
-                    transform: [{ translateX: textX }],
-                    color: isFocused ? '#000' : '#888',
-                  },
-                ]}
-              >
+                style={{
+                  opacity: textOpacity,
+                  transform: [{ translateX: textX }],
+                  color: isFocused ? '#000' : '#888',
+                  marginLeft: 8,
+                  fontSize: 14,
+                  fontWeight: '600',
+                }}>
                 {displayLabel}
               </Animated.Text>
             </Animated.View>
@@ -90,47 +122,6 @@ function AnimatedTabBar({ state, descriptors, navigation }: any) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  tabBar: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(64, 224, 208, 1)', // turquoise
-    marginHorizontal: 20,
-    margin: 20,
-    height: 80,
-    borderRadius: 100,
-    paddingHorizontal: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.12,
-    shadowRadius: 20,
-    elevation: 10,
-    position: 'absolute',
-    bottom: 0,
-    width: '90%'
-  },
-  tabButtonContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  pill: {
-    height: 50,
-    borderRadius: 100,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 12,
-    overflow: 'hidden',
-  },
-  label: {
-    marginLeft: 8,
-    fontSize: 14,
-    fontWeight: '600',
-  },
-});
 
 interface UserData {
   name?: string;
@@ -144,46 +135,62 @@ interface UserData {
 export default function MyTabs() {
   const [userData, setUserData] = React.useState<UserData | null>(null);
   const currentUser = auth.currentUser;
+  const { showLoading, hideLoading } = useLoading();
 
   React.useEffect(() => {
-    if (!currentUser) {
+    // Don't proceed if no user is logged in
+    if (!currentUser?.uid) {
       Alert.alert('Not Logged In', 'Please log in to view your profile.');
       return;
     }
 
-    const fetchUserData = async () => {
-      try {
-        const userDoc = await getDoc(doc(firestore, 'users', currentUser.uid));
-        if (userDoc.exists()) {
-          setUserData(userDoc.data() as UserData);
-        } else {
-          setUserData({
-            name: currentUser.displayName ?? 'User',
-            email: currentUser.email ?? '',
-            photo: currentUser.photoURL ?? '',
-            role: 'Passenger',
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching user data:', error);
-        Alert.alert('Error', 'Failed to load profile data.');
-      } finally {
-       return;
-      }
-    };
+    showLoading();
 
-    fetchUserData();
-  }, []);
+    // Create user document reference
+    const userDocRef = doc(firestore, 'users', currentUser.uid);
+
+    // Set up real-time listener with onSnapshot
+    const unsubscribe = onSnapshot(
+      userDocRef,
+      (snapshot) => {
+        hideLoading();
+
+        if (snapshot.exists()) {
+          // Document exists, update state with data
+          setUserData(snapshot.data() as UserData);
+        } else {
+          // Document doesn't exist, create it
+          return;
+        }
+      },
+      (error) => {
+        hideLoading();
+        console.error('Error fetching user data:', error);
+
+        // Handle specific errors
+        if (error.code === 'permission-denied') {
+          // Silently handle permission errors
+          console.warn('Permission denied for user data');
+        } else {
+          Alert.alert('Error', 'Failed to load profile data.');
+        }
+      }
+    );
+    // Cleanup function - unsubscribe from the listener
+    return () => {
+      hideLoading();
+      unsubscribe();
+    };
+  }, [currentUser?.uid]); // Only re-run when uid changes
 
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: { display: 'none' },
       }}
-      tabBar={(props) => <AnimatedTabBar {...props} />}
-    >
+      tabBar={(props) => <AnimatedTabBar {...props} />}>
       <Tab.Screen name="Main" options={{ headerShown: false }}>
-        {() => <Customer userData={userData} />}
+        {() => <Home userData={userData} />}
       </Tab.Screen>
 
       <Tab.Screen
@@ -194,8 +201,7 @@ export default function MyTabs() {
           headerStyle: { backgroundColor: colors.light },
           headerShadowVisible: false,
           headerTintColor: '#333',
-        }}
-      >
+        }}>
         {() => <Profile userData={userData} />}
       </Tab.Screen>
     </Tab.Navigator>

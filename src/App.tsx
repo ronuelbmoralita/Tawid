@@ -1,15 +1,16 @@
 // App.js
 import * as React from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Login from './Login';
 import MyTab from './screens/tab';
 import { StatusBar } from 'expo-status-bar';
-import { auth } from '../firebaseConfig';
+import { auth } from './firebase/firebaseConfig';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { colors } from './components/colors';
 import { LoadingProvider } from '../loading';
+import { Image } from 'expo-image';
 
 const Stack = createNativeStackNavigator();
 
@@ -31,15 +32,18 @@ function RootStack() {
   if (loading) {
     // Loading screen while checking auth
     return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          backgroundColor: colors.light,
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: colors.light,
+      }}>
+        <Image style={{
+          width: 60,
+          height: 60,
+          borderRadius: 60
         }}
-      >
-        <ActivityIndicator size="large" color={colors.primary} />
+          source={require(`../assets/splash-icon.png`)} />
       </View>
     );
   }

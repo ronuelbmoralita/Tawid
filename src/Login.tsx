@@ -84,7 +84,6 @@ const Graphic = ({ isLast, iconName }) => (
 
 export default function Login() {
   const { showLoading, hideLoading } = useLoading();
-
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const slidesRef = useRef(null);
@@ -105,7 +104,7 @@ export default function Login() {
       if (result.start) {
         showLoading();
       } else if (result.success) {
-        hideLoading();
+        //hideLoading();
         console.log('Login successful!', result.user);
       } else {
         hideLoading();

@@ -17,7 +17,7 @@ import {
   getDoc,
   serverTimestamp,
 } from 'firebase/firestore';
-import { auth, firestore } from './firebaseConfig';
+import { auth, firestore } from './src/firebase/firebaseConfig';
 import { Alert } from 'react-native';
 
 // Configure Google Sign-In (do this once, ideally at app startup)
