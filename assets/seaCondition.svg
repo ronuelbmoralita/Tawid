@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="512"
+   height="512"
+   viewBox="0 0 512 512"
+   version="1.1"
+   id="svg9"
+   sodipodi:docname="seaCondition.svg"
+   inkscape:version="1.4.2 (ebf0e940, 2025-05-08)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs9">
+    <marker
+       id="arrowhead"
+       markerWidth="3.2"
+       markerHeight="3.2"
+       refX="1.6"
+       refY="1.6"
+       orient="auto">
+      <path
+         d="M0,0 L3.2,1.6 L0,3.2 Z"
+         fill="#000000"
+         id="path1" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="namedview9"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="0.8125"
+     inkscape:cx="107.07692"
+     inkscape:cy="112.61538"
+     inkscape:window-width="1280"
+     inkscape:window-height="646"
+     inkscape:window-x="63"
+     inkscape:window-y="30"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg9" />
+  <!-- cloud: colors.brand outline, lower opacity so it recedes behind the sun -->
+  <path
+     id="cloud"
+     d="m 397.82748,218.7221 c 1.23093,-3.21242 1.92145,-6.72508 1.92145,-10.38784 0,-15.91202 -12.90975,-28.82177 -28.82176,-28.82177 -5.91447,0 -11.43864,1.80136 -16.00209,4.83365 -8.25623,-14.38086 -23.838,-24.04816 -41.64145,-24.04816 -26.54004,0 -48.03627,21.49623 -48.03627,48.03628 0,0.81061 0.03,1.62122 0.06,2.43183 -16.8127,5.91447 -28.88181,21.94658 -28.88181,40.80082 0,23.86802 19.36462,43.23265 43.23265,43.23265 h 110.48344 c 21.22603,0 38.42902,-17.20299 38.42902,-38.42902 0,-18.58404 -13.20998,-34.10576 -30.74322,-37.64844 z"
+     fill="none"
+     stroke="#40e0d0"
+     stroke-opacity="0.55"
+     stroke-width="10"
+     stroke-linejoin="round"
+     stroke-linecap="round" />
+  <!-- sun: solid colors.brand -->
+  <g
+     id="sun"
+     stroke="#40e0d0"
+     stroke-linecap="round"
+     transform="translate(205.38732,-34.81141)">
+    <circle
+       cx="215"
+       cy="150"
+       r="26"
+       fill="#40e0d0"
+       stroke="none"
+       id="circle1" />
+    <line
+       x1="248"
+       y1="150"
+       x2="264"
+       y2="150"
+       stroke-width="8"
+       id="line1" />
+    <line
+       x1="233"
+       y1="178"
+       x2="241"
+       y2="192"
+       stroke-width="8"
+       id="line2" />
+    <line
+       x1="197"
+       y1="178"
+       x2="189"
+       y2="192"
+       stroke-width="8"
+       id="line3" />
+    <line
+       x1="182"
+       y1="150"
+       x2="166"
+       y2="150"
+       stroke-width="8"
+       id="line4" />
+    <line
+       x1="197"
+       y1="122"
+       x2="189"
+       y2="108"
+       stroke-width="8"
+       id="line5" />
+    <line
+       x1="233"
+       y1="122"
+       x2="241"
+       y2="108"
+       stroke-width="8"
+       id="line6" />
+  </g>
+  <!-- mini bar chart: sea condition levels, colors from CONFIG (calm -> veryRough) -->
+  <g
+     id="chart"
+     transform="matrix(2.0878566,0,0,2.0878566,-721.46648,-202.99404)">
+    <rect
+       x="356"
+       y="240"
+       width="14"
+       height="20"
+       rx="3"
+       fill="#22c55e"
+       id="rect6" />
+    <rect
+       x="378"
+       y="220"
+       width="14"
+       height="40"
+       rx="3"
+       fill="#eab308"
+       id="rect7" />
+    <rect
+       x="400"
+       y="202"
+       width="14"
+       height="58"
+       rx="3"
+       fill="#f97316"
+       id="rect8" />
+    <rect
+       x="422"
+       y="185"
+       width="14"
+       height="75"
+       rx="3"
+       fill="#ef4444"
+       id="rect9" />
+    <path
+       id="trend-arrow"
+       d="m 352.65962,223.52675 22.79498,-28.4139 14.49006,12.13898 29.07746,-34.21099"
+       stroke="#000000"
+       stroke-width="4.25947"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       fill="none"
+       marker-end="url(#arrowhead)"
+       style="stroke-width:4.78960097;stroke-dasharray:none" />
+  </g>
+  <!-- layered sea waves: colors.brand, varying opacity -->
+  <path
+     id="wave-back"
+     d="M0,385 Q64,405 128,385 T256,385 T384,385 T512,385 V512 H0 Z"
+     fill="#40E0D0"
+     fill-opacity="0.35" />
+  <path
+     id="wave-mid"
+     d="M0,410 Q64,388 128,410 T256,410 T384,410 T512,410 V512 H0 Z"
+     fill="#40E0D0"
+     fill-opacity="0.6" />
+  <path
+     id="wave-front"
+     d="M0,440 Q64,412 128,440 T256,440 T384,440 T512,440 V512 H0 Z"
+     fill="#40E0D0"
+     fill-opacity="1" />
+</svg>
