@@ -4,7 +4,7 @@ import { Dimensions, FlatList, Animated, Alert } from 'react-native';
 import * as Location from 'expo-location';
 import * as Notifications from 'expo-notifications';
 
-import { googleLogin } from '../firebase/googleAuth';
+import { googleLogin } from '../auth/loginAuth';
 import { useSlideUpFadeIn } from '../constants/animation';
 import type { SeaCondition } from './users/passenger/home/seaCondition';
 

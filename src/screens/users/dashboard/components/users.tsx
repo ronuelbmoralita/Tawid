@@ -129,6 +129,9 @@ export default function UsersScreen() {
                     <Text style={{ fontSize: 13, color: 'rgba(0,0,0,0.55)' }} numberOfLines={1}>
                         {item.email}
                     </Text>
+                    <Text style={{ fontSize: 13, color: 'rgba(0,0,0,0.55)' }} numberOfLines={1}>
+                        {item.code || 'Unknown code'}
+                    </Text>
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 }}>
                         <FontAwesome6 name="location-dot" size={11} color="rgba(0,0,0,0.4)" iconStyle="solid" />
@@ -148,7 +151,6 @@ export default function UsersScreen() {
                     </View>
 
                     <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 }}>
-                        <Text style={{ fontSize: 11, color: 'rgba(0,0,0,0.4)', fontFamily: 'Courier' }}>{item.code}</Text>
                         <Text style={{ fontSize: 11, color: 'rgba(0,0,0,0.4)' }}>
                             Last login: {formatTimestamp(item.lastLoginAt)}
                         </Text>
@@ -200,7 +202,7 @@ export default function UsersScreen() {
                     height: 42,
                     marginBottom: 10,
                     gap: 8,
-                }}> 
+                }}>
                 <FontAwesome6 name="magnifying-glass" size={14} color="rgba(0,0,0,0.4)" iconStyle="solid" />
                 <TextInput
                     value={search}

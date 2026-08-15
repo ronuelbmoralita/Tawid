@@ -5,7 +5,7 @@ import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { colors } from '../../../../constants/colors';
 import { Port, Vessel, Route, Trip, subscribeToPorts, subscribeToVessels, subscribeToRoutes, subscribeToTripsForRoute, addRoute, deleteRoute, addTrip, updateTrip, deleteTrip, getTripsByRoute, getVesselName } from '../dashboardFunctions';
 import TawidModal from '../../../../components/tawidModal';
-import { tawidNotif } from '../../../../firebase/tawidNotification';
+import { broadcastNotif } from '../../../../notifications/broadcastNotif';
 
 // Route Form Component (unchanged - already compact)
 const RouteForm = ({ initial, ports, routes, formRef }: any) => {
@@ -225,7 +225,7 @@ export default function RoutesScreen() {
               : status === 'Sailing' ? `Ka-Tawid, nagbago ang status ng ${vesselName} (${routeName}) sa "${status}". Tuloy na po ang biyahe.`
               : status === 'No Sailing' ? `Ka-Tawid, nagbago ang status ng ${vesselName} (${routeName}) sa "${status}". Paumanhin, pansamantalang walang biyahe. Maghintay lamang po sa abiso kung may pagbabago.`
               : `Ka-Tawid, nagbago ang status ng ${vesselName} (${routeName}) sa "${status}".`;
-            tawidNotif(msg);
+            broadcastNotif(msg);
           }
         } catch { showAlert('Error', 'Failed to update trip'); setModal(prev => ({ ...prev, saving: false })); }
       }

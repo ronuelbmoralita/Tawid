@@ -12,7 +12,7 @@ import {
 } from 'firebase/firestore';
 import { Alert } from 'react-native';
 import { firestore } from '../../../firebase/firebaseConfig';
-import { feedbackNotif } from './notification/feedbackSend';
+import { feedbackNotif } from '../../../notifications/feedbackNotif';
 
 // ==================== TYPES ====================
 

@@ -7,7 +7,7 @@ import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { colors } from '../../constants/colors';
 import { auth, firestore } from '../../firebase/firebaseConfig';
 import { doc, updateDoc } from 'firebase/firestore';
-import { googleLogout } from '../../firebase/googleAuth';
+import { googleLogout } from '../../auth/loginAuth';
 import ProfileContent from './profileContent';
 
 interface ProfileProps {

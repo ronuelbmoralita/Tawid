@@ -4,7 +4,7 @@ import {
   collection,
   getDocs,
   doc,
-  updateDoc,
+  setDoc,
 } from "firebase/firestore";
 import { auth, firestore } from "../../../../firebase/firebaseConfig";
 
@@ -77,13 +77,20 @@ export async function updateNearestPort(): Promise<void> {
     }
   }
 
-  await updateDoc(doc(firestore, "users", uid), {
-    nearestPort: {
-      city: nearest.name,
-      latitude: nearest.lat,
-      longitude: nearest.lng,
+  // setDoc + merge instead of updateDoc — safe kahit wala pang document
+  // ang bagong user (race condition sa parallel user-doc creation sa
+  // googleAuth.ts)
+  await setDoc(
+    doc(firestore, "users", uid),
+    {
+      nearestPort: {
+        city: nearest.name,
+        latitude: nearest.lat,
+        longitude: nearest.lng,
+      },
     },
-  });
+    { merge: true }
+  );
 
   console.log(
     `📍 Nearest port: ${nearest.name} (${nearestDist.toFixed(1)} km)`

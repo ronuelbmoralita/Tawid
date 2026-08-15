@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getFunctions } from 'firebase/functions';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -26,4 +27,8 @@ const auth = initializeAuth(app, {
 // Initialize Firestore
 const firestore = getFirestore(app);
 
-export { auth, firestore };
+// Initialize Functions — region must match the `onCall({ region: ... })`
+// declared in functions/src/tawidTransactions.ts
+const functions = getFunctions(app, 'asia-southeast2');
+
+export { auth, firestore, functions };

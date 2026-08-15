@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, Text, ActivityIndicator, Alert } from 'react-native';
 import { colors } from '../../../../constants/colors';
 import { Icon } from '../../../../constants/icons';
-import { tawidNotif } from '../../../../firebase/tawidNotification';
+import { broadcastNotif } from '../../../../notifications/broadcastNotif';
 import { subscribeToSuspension, toggleSuspension } from '../dashboardFunctions';
 
 const FloatingButton: React.FC = () => {
@@ -17,7 +17,7 @@ const FloatingButton: React.FC = () => {
 
   const handlePress = () => {
     const next = !isSuspended;
-    
+
     Alert.alert(
       next ? 'Suspend All Trips?' : 'Resume All Trips?',
       next
@@ -35,11 +35,11 @@ const FloatingButton: React.FC = () => {
 
               // 🔔 Send notification in Tagalog
               if (next) {
-                await tawidNotif(
+                await broadcastNotif(
                   'Ka-Tawid, pansamantalang "WALANG BYAHE" sa LAHAT ng ruta hanggang sa bagong abiso. Mangyaring maghintay lamang po ng update.'
                 );
               } else {
-                await tawidNotif(
+                await broadcastNotif(
                   'Ka-Tawid, "BUMALIK NA SA NORMAL" ang LAHAT ng iskedyul. I-check po ang Tawid app para sa availability ng mga byahe sa inyong ruta.'
                 );
               }

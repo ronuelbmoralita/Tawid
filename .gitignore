@@ -49,3 +49,4 @@ google-services.json
 # build artifacts
 *.aab
 *.apk
+build-*.tar.gz

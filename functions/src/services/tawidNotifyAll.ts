@@ -176,6 +176,19 @@ export const tawidNotifyAll = functions.onSchedule({
       await sendPush(cachedTokens, title, body);
       notified++;
       logger.info(`📨 Sent: ${vesselName} at ${trip.time}`);
+
+      // Broadcast transaction record — uid: "ALL" para makita ng lahat
+      // ng user sa kanilang transactions modal, isang doc lang (hindi
+      // per-user) kaya hindi lumalaki ang write count kasabay ng user base.
+      await admin.firestore().collection("transactions").add({
+        uid: "ALL",
+        type: "advisory",
+        status: "unread",
+        title,
+        details: {message: body},
+        createdAt: admin.firestore.FieldValue.serverTimestamp(),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      });
     } catch (err) {
       await doc.ref.update({
         notifiedDepartureDate: admin.firestore.FieldValue.delete(),

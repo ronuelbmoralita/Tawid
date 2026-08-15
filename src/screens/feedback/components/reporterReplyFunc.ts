@@ -11,7 +11,7 @@ import {
 } from 'firebase/firestore';
 import { Alert } from 'react-native';
 import { auth, firestore } from '../../../firebase/firebaseConfig';
-import { feedbackNotifCompany } from './notification/feedbackSend';
+import notifyCompany from '../../../notifications/notifyCompany';
 
 // ==================== TYPES ====================
 
@@ -222,10 +222,12 @@ export async function submitFeedback(
 
     // Send notification to company
     try {
-      await feedbackNotifCompany(category, trimmed, userData?.name ?? null);
+      await notifyCompany({
+        title: `New Feedback • ${category}`,
+        body: userData?.name ? `${userData.name}: ${trimmed}` : trimmed,
+      });
     } catch (notifError) {
       console.error('Notification failed:', notifError);
-      // Don't throw - notification failure shouldn't break the feedback submission
     }
 
     return docRef.id;

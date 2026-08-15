@@ -1,7 +1,7 @@
 // components/ScheduleModal.tsx
 import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
 import { View, Text, Dimensions, Alert, TextInput, ScrollView } from 'react-native';
-import { Image as ExpoImage } from 'expo-image';
+import { Image } from 'expo-image';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
@@ -57,7 +57,7 @@ const ScheduleImageContent = ({
           alignItems: 'center',
         }}
       >
-        <ExpoImage
+        <Image
           source={require('../../../../../assets/tawid.svg')}
           style={{ width: 90, height: 25, borderRadius: 100 }}
           tintColor={colors.white}

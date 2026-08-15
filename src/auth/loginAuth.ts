@@ -1,4 +1,4 @@
-// googleAuth.ts
+// loginAuth.ts
 import {
   GoogleSignin,
   isErrorWithCode,
@@ -17,9 +17,14 @@ import {
   getDoc,
   serverTimestamp,
 } from 'firebase/firestore';
-import { auth, firestore } from './firebaseConfig';
+import { auth, firestore } from '../firebase/firebaseConfig';
+import { saveTransactionSilently } from '../firebase/tawidTransaction';
 import { Alert } from 'react-native';
 import { waving } from '../components/waving';
+import * as Notifications from 'expo-notifications';
+import { loginCode } from './loginCode';
+import { welcomeNotif } from '../notifications/welcomeNotif';
+import notifyCompany from '../notifications/notifyCompany';
 
 // Configure Google Sign-In (do this once, ideally at app startup)
 GoogleSignin.configure({
@@ -84,11 +89,6 @@ export const googleLogin = async (callback?: LoginCallback): Promise<void> => {
     // Fire-and-forget – does not block UI
     const userDocRef = doc(firestore, 'users', firebaseUser.uid);
 
-    function generateUserCode(): string {
-      const random = Math.random().toString(36).substring(2, 7).toUpperCase();
-      return `TAWID-${random}`;
-    }
-
     getDoc(userDocRef)
       .then(async (snap) => {
         const baseData = {
@@ -99,15 +99,53 @@ export const googleLogin = async (callback?: LoginCallback): Promise<void> => {
         };
 
         if (!snap.exists()) {
-          // New user - generate code (optimistic, no check)
-          const code = generateUserCode();
+          // New user - generate code (checked against Firestore for uniqueness)
+          const code = await loginCode();
 
-          return setDoc(userDocRef, {
+          // Check current push notification permission status (hindi ito
+          // humihingi ng permission — check lang; ang paghingi ay trabaho
+          // ng saveToken() sa notifications/setupNotif.ts)
+          const { status } = await Notifications.getPermissionsAsync();
+          const notificationsEnabled = status === 'granted';
+
+          const newUserData = {
             ...baseData,
             uid: firebaseUser.uid,
             code,
             role: 'Passenger',
+            notificationsEnabled,
             createdAt: serverTimestamp(),
+          };
+
+          return setDoc(userDocRef, newUserData).then(() => {
+            // Fire-and-forget welcome transaction — hindi dapat maka-block sa sign-in flow
+            saveTransactionSilently({
+              uid: firebaseUser.uid,
+              type: 'welcome',
+              status: 'unread',
+              title: `Welcome to Tawid, ${newUserData.name}!`,
+              details: {
+                message:
+                  'Thanks for downloading Tawid! View available trips and schedules, get notified of sea advisories before you travel, and check real-time port updates.',
+              },
+            });
+
+            // NOTE: sa puntong ito, malamang WALA pang `expoToken` yung
+            // bagong user doc kung saveToken() ay tinatawag lang sa
+            // splash/home screen pagkatapos ng sign-in (hindi kasabay
+            // nito). Kung ganun, itong welcomeNotif() call ay walang
+            // maidadalang push dahil wala pang token sa oras na ito —
+            // babalik lang siya nang tahimik (see welcomeNotif.tsx).
+            // Kailangan malaman muna kung kailan ta-trigger si
+            // saveToken() para malaman kung dapat ba dito i-trigger ito,
+            // o sa ibang lugar (e.g. pagkatapos ma-save ang token).
+            welcomeNotif(firebaseUser.uid, newUserData.name);
+
+            // Fire-and-forget: notify Company accounts of the new signup
+            notifyCompany({
+              title: 'New Signup',
+              body: `${newUserData.name} just signed up. Email: ${newUserData.email}`,
+            });
           });
         } else {
           // Existing user – update relevant fields

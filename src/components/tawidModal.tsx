@@ -9,6 +9,7 @@ import {
   ScrollView,
   ViewStyle,
   TextStyle,
+  DimensionValue,
 } from 'react-native';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { colors } from '../constants/colors';
@@ -28,6 +29,8 @@ interface TawidModalProps {
   showCloseButton?: boolean;
   /** Array of action buttons (like Alert.alert) */
   actions?: ModalAction[];
+  /** Optional fixed height (e.g. 300, '50%', '400') */
+  height?: DimensionValue;
   children: React.ReactNode;
 }
 
@@ -37,6 +40,7 @@ const TawidModal: React.FC<TawidModalProps> = ({
   title,
   showCloseButton = true,
   actions = [],
+  height, // <-- kinuha natin ang height prop dito
   children,
 }) => {
   const showHeader = title || showCloseButton;
@@ -89,6 +93,22 @@ const TawidModal: React.FC<TawidModalProps> = ({
     return { color: 'white', fontWeight: '600' };
   };
 
+  // Dynamic style para sa modal container
+  const modalContainerStyle: ViewStyle = {
+    backgroundColor: colors.white,
+    borderRadius: 20,
+    width: '92%',
+    maxWidth: 400,
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.25,
+    shadowRadius: 20,
+    // Kung may ipinasang height, 'yun ang gagamitin bilang fixed height.
+    // Kapag wala, gagamitin ang maxHeight para mag-expand base sa content.
+    ...(height ? { height } : { maxHeight: '85%' }),
+  };
+
   return (
     <Modal transparent visible={visible} animationType="fade">
       <TouchableWithoutFeedback onPress={onClose}>
@@ -101,66 +121,59 @@ const TawidModal: React.FC<TawidModalProps> = ({
           }}
         >
           <TouchableWithoutFeedback>
-            <View
-              style={{
-                backgroundColor: colors.white,
-                borderRadius: 20,
-                width: '92%',
-                maxWidth: 400,
-                maxHeight: '85%',
-                elevation: 10,
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 10 },
-                shadowOpacity: 0.25,
-                shadowRadius: 20,
-              }}
-            >
-              <ScrollView showsVerticalScrollIndicator={false}>
-                <View style={{ padding: 20 }}>
-                  {showHeader && (
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        justifyContent: title ? 'space-between' : 'flex-end',
-                        alignItems: 'center',
-                        marginBottom: 20,
-                        paddingBottom: 12,
-                        borderBottomWidth: 1,
-                        borderBottomColor: '#f0f0f0',
-                      }}
-                    >
-                      {title && (
-                        <Text
-                          style={{
-                            fontSize: 20,
-                            fontWeight: '700',
-                            color: colors.black,
-                            letterSpacing: 0.3,
-                          }}
-                        >
-                          {title}
-                        </Text>
-                      )}
-                      {showCloseButton && (
-                        <TouchableOpacity
-                          onPress={onClose}
-                          style={{
-                            padding: 6,
-                            borderRadius: 20,
-                            backgroundColor: '#f5f5f5',
-                            width: 32,
-                            height: 32,
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}
-                        >
-                          <FontAwesome6 name="xmark" size={18} color="#666" iconStyle="solid" />
-                        </TouchableOpacity>
-                      )}
-                    </View>
-                  )}
+            <View style={modalContainerStyle}>
+              {/* ginawang contentContainerStyle para ma-stretch ang ScrollView height pag may fixed height */}
+              <ScrollView
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{ flexGrow: 1 }}
+              >
+                <View style={{ padding: 20, flex: 1, justifyContent: 'space-between' }}>
+                  <View>
+                    {showHeader && (
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          justifyContent: title ? 'space-between' : 'flex-end',
+                          alignItems: 'center',
+                          marginBottom: 20,
+                          paddingBottom: 12,
+                          borderBottomWidth: 1,
+                          borderBottomColor: '#f0f0f0',
+                        }}
+                      >
+                        {title && (
+                          <Text
+                            style={{
+                              fontSize: 20,
+                              fontWeight: '700',
+                              color: colors.black,
+                              letterSpacing: 0.3,
+                            }}
+                          >
+                            {title}
+                          </Text>
+                        )}
+                        {showCloseButton && (
+                          <TouchableOpacity
+                            onPress={onClose}
+                            style={{
+                              padding: 6,
+                              borderRadius: 20,
+                              backgroundColor: '#f5f5f5',
+                              width: 32,
+                              height: 32,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}
+                          >
+                            <FontAwesome6 name="xmark" size={18} color="#666" iconStyle="solid" />
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    )}
 
-                  {children}
+                    {children}
+                  </View>
 
                   {actions.length > 0 && (
                     <View

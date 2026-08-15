@@ -1,11 +1,10 @@
 // ============================================================
-// services/tawidNotification.tsx (FIXED)
+// notifications/setupNotif.ts
 // ============================================================
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
-import { getFirestore, collection, getDocs, doc, updateDoc } from 'firebase/firestore';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import { getFunctions, httpsCallable } from 'firebase/functions';
 
 // 👇 FIXED: Remove "shouldShowAlert" and use "shouldShowBanner" & "shouldShowList"
 Notifications.setNotificationHandler({
@@ -30,39 +29,15 @@ export async function saveToken() {
 
     const user = getAuth().currentUser;
     if (user) {
-      await updateDoc(doc(getFirestore(), 'users', user.uid), {
-        expoToken: token.data
-      });
+      // setDoc + merge instead of updateDoc — safe kahit wala pang
+      // document ang bagong user (race condition sa parallel user-doc
+      // creation sa googleAuth.ts)
+      await setDoc(
+        doc(getFirestore(), 'users', user.uid),
+        { expoToken: token.data },
+        { merge: true }
+      );
       console.log('✅ Token saved');
-    }
-  } catch (error) {
-    console.error('❌ Error:', error);
-  }
-}
-
-// MAG-SEND NG NOTIFICATION
-export async function tawidNotif(body: string) {
-  try {
-    const users = await getDocs(collection(getFirestore(), 'users'));
-    const tokens: string[] = [];
-    users.forEach(docSnap => {
-      const data = docSnap.data();
-      // Only get tokens from users with notifications enabled
-      if (data.expoToken && data.notificationsEnabled !== false) {
-        tokens.push(data.expoToken);
-      }
-    });
-
-    if (tokens.length > 0) {
-      const sendPush = httpsCallable(getFunctions(undefined, 'asia-southeast2'), 'tawidNotification');
-      await sendPush({ 
-        tokens, 
-        title: '📢 Travel Advisory',
-        body: body 
-      });
-      console.log(`✅ Push sent to ${tokens.length} users`);
-    } else {
-      console.log('ℹ️ No users with notifications enabled');
     }
   } catch (error) {
     console.error('❌ Error:', error);
@@ -76,4 +51,4 @@ export function setupNotifications() {
   });
 }
 
-export default { saveToken, tawidNotif, setupNotifications };
+export default { saveToken, setupNotifications };

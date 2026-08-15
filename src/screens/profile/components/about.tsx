@@ -106,32 +106,50 @@ const About: React.FC<AboutProps> = ({ trigger }) => {
 
           {/* Contact / footer */}
           <TawidCard color={colors.brand}>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 10,
-                marginBottom: 8,
-              }}
-            >
-              <FontAwesome6
-                name="envelope"
-                size={16}
-                color={colors.brand}
-                iconStyle="solid"
-              />
-              <Text style={{ fontSize: 14, fontWeight: '600', color: '#1a1a1a' }}>
-                Get in Touch
-              </Text>
-            </View>
-            <Text
-              onPress={() => Linking.openURL('mailto:tawidapp@gmail.com')}
-              style={{ fontSize: 13, color: colors.brand, fontWeight: '500' }}
-            >
-              tawidapp@gmail.com
-            </Text>
+            {[
+              {
+                icon: 'envelope',
+                iconStyle: 'solid',
+                label: 'Email Us',
+                value: 'tawidapp@gmail.com',
+                onPress: () => Linking.openURL('mailto:tawidapp@gmail.com'),
+              },
+              {
+                icon: 'facebook',
+                iconStyle: 'brand',
+                label: 'Follow us on FB',
+                value: 'facebook.com/tawidApp',
+                onPress: () => Linking.openURL('https://www.facebook.com/tawidApp'),
+              },
+            ].map((item, index) => (
+              <View key={item.label} style={{ marginBottom: index === 0 ? 12 : 0 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 10,
+                    marginBottom: 6,
+                  }}
+                >
+                  <FontAwesome6
+                    name={item.icon as any}
+                    size={16}
+                    color={colors.brand}
+                    iconStyle={item.iconStyle as any}
+                  />
+                  <Text style={{ fontSize: 14, fontWeight: '600', color: '#1a1a1a' }}>
+                    {item.label}
+                  </Text>
+                </View>
+                <Text
+                  onPress={item.onPress}
+                  style={{ fontSize: 13, color: colors.brand, fontWeight: '500' }}
+                >
+                  {item.value}
+                </Text>
+              </View>
+            ))}
           </TawidCard>
-
           <Text
             style={{
               fontSize: 11,
