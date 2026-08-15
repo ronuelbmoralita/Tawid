@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, LayoutAnimation, Platform, UIManager } from 'react-native';
-import { Image } from 'expo-image';
+import { Image as ExpoImage } from 'expo-image';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import {
   collection,
@@ -66,11 +66,21 @@ export default function TawidHeader({ userData }: TawidHeaderProps) {
 
     setLoading(true);
 
-    const q = query(
-      collection(firestore, 'transactions'),
+    // Bagong users ay hindi dapat makakita ng advisories na nilikha BAGO
+    // sila mag-sign up — kailangan ng lower-bound sa createdAt ng account.
+    // userData.createdAt ay isang Firestore Timestamp galing sa users doc.
+    const accountCreatedAt = userData?.createdAt;
+
+    const constraints = [
       where('uid', 'in', [uid, 'ALL']),
-      where('type', 'in', ['welcome', 'advisory'])
-    );
+      where('type', 'in', ['welcome', 'advisory']),
+    ];
+
+    if (accountCreatedAt) {
+      constraints.push(where('createdAt', '>=', accountCreatedAt));
+    }
+
+    const q = query(collection(firestore, 'transactions'), ...constraints);
 
     const unsubscribe = onSnapshot(
       q,
@@ -96,7 +106,7 @@ export default function TawidHeader({ userData }: TawidHeaderProps) {
     );
 
     return () => unsubscribe();
-  }, [uid]);
+  }, [uid, userData?.createdAt]);
 
   // ---------- Mark as read (only when expanded) ----------
   const markAsRead = async (item: Notification) => {
@@ -131,31 +141,26 @@ export default function TawidHeader({ userData }: TawidHeaderProps) {
 
   // ---------- Render ----------
   return (
-    <View style={{
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      paddingHorizontal: 15,
-      paddingVertical: 12,
-    }} >
-      <Image
+    <View
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 15,
+        paddingVertical: 12,
+      }}
+    >
+      <ExpoImage
         source={require('../../assets/tawid.svg')}
-        style={{ width: 120, height: 40, borderRadius: 100 }}
+        style={{ width: 90, height: 25, borderRadius: 100 }}
         contentFit="contain"
       />
+
       <TouchableOpacity
         onPress={() => setShowNotifications(true)}
         hitSlop={10}
-        style={{
-          position: 'relative',
-          width: 40,
-          height: 40,
-          borderRadius: 14,
-          backgroundColor: colors.brand + '18',
-          alignItems: 'center',
-          justifyContent: 'center',
-          flexShrink: 0,
-        }}>
+        style={{ position: 'relative' }}
+      >
         <FontAwesome6 name="bell" size={24} color={colors.brand} iconStyle="solid" />
 
         {unreadCount > 0 && (

@@ -284,6 +284,7 @@ const Schedule: React.FC<ScheduleProps> = ({
       >
         <View style={{
           paddingHorizontal: 15,
+          paddingBottom:15,
           gap: 15,
         }}>
           {children && <View>{children}</View>}

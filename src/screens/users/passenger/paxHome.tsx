@@ -149,7 +149,7 @@ export default function PaxHome({ userData }: PaxHomeProps) {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.white }}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }} edges={['top']}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.brand} />
         <View style={{ flex: 1 }}>
           <TawidHeader userData={userData} />

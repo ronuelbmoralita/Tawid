@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import PaxHome from './screens/users/passenger/paxHome';
 import Profile from './screens/profile/profile';
@@ -42,7 +43,17 @@ const TAB_ICONS: Record<string, string> = {
 
 function Tabs({ userData }: { userData: UserData | null }) {
   const HomeComponent = HOME_BY_ROLE[userData?.role ?? ''];
+  const insets = useSafeAreaInsets();
+
   if (!HomeComponent) return null;
+
+  // Base height ng tab bar content (icons + labels), hiwalay sa bottom inset.
+  const TAB_BAR_CONTENT_HEIGHT = 60;
+
+  // Dynamic bottom padding — umaadjust sa gesture bar o button nav ng device.
+  // insets.bottom = 0 sa mga device na walang on-screen nav (physical buttons),
+  // at may tamang value sa mga device na may gesture bar / nav bar.
+  const bottomPadding = Math.max(insets.bottom, 8);
 
   return (
     <Tab.Navigator
@@ -52,8 +63,9 @@ function Tabs({ userData }: { userData: UserData | null }) {
         tabBarInactiveTintColor: 'rgba(60,60,60,0.6)',
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
-          height: 70,
-          paddingVertical: 8,
+          height: TAB_BAR_CONTENT_HEIGHT + bottomPadding,
+          paddingTop: 8,
+          paddingBottom: bottomPadding,
           borderTopWidth: 1,
           borderTopColor: 'rgba(0,0,0,0.1)',
         },
