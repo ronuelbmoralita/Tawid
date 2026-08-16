@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { colors } from '../../../../constants/colors';
 
@@ -9,6 +9,7 @@ interface ReplyProps {
   repliedAt: string;
   iconName?: string;
   badgeText?: string;
+  onEditPress?: () => void;
 }
 
 export function Reply({
@@ -17,6 +18,7 @@ export function Reply({
   repliedAt,
   iconName = 'building',
   badgeText = 'Author',
+  onEditPress,
 }: ReplyProps) {
   return (
     <View style={{ marginLeft: 20, marginTop: 8, flexDirection: 'row' }}>
@@ -83,20 +85,27 @@ export function Reply({
               </View>
             </View>
 
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 4,
-                paddingHorizontal: 7,
-                paddingVertical: 3,
-                borderRadius: 6,
-                backgroundColor: colors.red + 20,
-              }}>
-              <FontAwesome6 name="circle-check" size={10} color={colors.red} iconStyle="solid" />
-              <Text style={{ fontSize: 10, fontWeight: '600', color: colors.red }}>
-                Closed
-              </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+              {onEditPress && (
+                <TouchableOpacity onPress={onEditPress} hitSlop={8} style={{ padding: 2 }}>
+                  <FontAwesome6 name="pen" size={11} color={colors.brand} iconStyle="solid" />
+                </TouchableOpacity>
+              )}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 4,
+                  paddingHorizontal: 7,
+                  paddingVertical: 3,
+                  borderRadius: 6,
+                  backgroundColor: colors.red + 20,
+                }}>
+                <FontAwesome6 name="circle-check" size={10} color={colors.red} iconStyle="solid" />
+                <Text style={{ fontSize: 10, fontWeight: '600', color: colors.red }}>
+                  Closed
+                </Text>
+              </View>
             </View>
           </View>
 

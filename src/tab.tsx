@@ -16,6 +16,8 @@ import { auth, firestore } from './firebase/firebaseConfig';
 import { useWaving } from './components/waving';
 import { updateNearestPort } from './screens/users/passenger/home/seaNearestPort';
 import { colors } from './constants/colors';
+import { useTransactionCounts } from './firebase/useTransactionCounts';
+import { TawidBadge } from './components/tawidBadge';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -44,6 +46,7 @@ const TAB_ICONS: Record<string, string> = {
 function Tabs({ userData }: { userData: UserData | null }) {
   const HomeComponent = HOME_BY_ROLE[userData?.role ?? ''];
   const insets = useSafeAreaInsets();
+  const { feedbackBadgeCount } = useTransactionCounts(userData);
 
   if (!HomeComponent) return null;
 
@@ -69,13 +72,26 @@ function Tabs({ userData }: { userData: UserData | null }) {
           borderTopWidth: 1,
           borderTopColor: 'rgba(0,0,0,0.1)',
         },
-        tabBarIcon: ({ focused, color, size }) => (
-          <FontAwesome6
-            name={TAB_ICONS[route.name] ?? 'circle'}
-            iconStyle="solid"
-            size={focused ? 25 : 18}
-            color={color}
-          />
+        tabBarIcon: ({ focused, color }) => (
+          <View style={{ position: 'relative' }}>
+            <FontAwesome6
+              name={TAB_ICONS[route.name] ?? 'circle'}
+              iconStyle="solid"
+              size={focused ? 25 : 18}
+              color={color}
+            />
+            {route.name === 'Feedback' && (
+              <TawidBadge
+                count={feedbackBadgeCount}
+                badgeStyle={
+                  focused
+                    ? { minWidth: 20, height: 20, top: -6, right: -8 }
+                    : { minWidth: 15, height: 15, top: -3, right: -8 }
+                }
+                textStyle={focused ? { fontSize: 11 } : { fontSize: 9 }}
+              />
+            )}
+          </View>
         ),
       })}
     >

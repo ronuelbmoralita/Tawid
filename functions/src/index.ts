@@ -5,4 +5,4 @@ admin.initializeApp();
 export {getPaymongoKey} from "./services/getPaymongoKey";
 export {tawidNotification} from "./services/tawidNotification";
 export {tawidNotifyAll} from "./services/tawidNotifyAll";
-export {createTawidTransaction} from "./services/tawidTransactions";
+export {createTawidTransaction, updateTawidTransaction} from "./services/tawidTransactions";

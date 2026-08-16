@@ -21,6 +21,7 @@ interface CardProps {
   showReplyHint?: boolean;
   disabled?: boolean;
   showEmail?: boolean;
+  onEditPress?: () => void;
 }
 
 export function Card({
@@ -40,6 +41,7 @@ export function Card({
   showReplyHint = false,
   disabled = false,
   showEmail = false,
+  onEditPress,
 }: CardProps) {
   return (
     <TouchableOpacity
@@ -85,16 +87,25 @@ export function Card({
               </Text>
               <Text style={{ fontSize: 11, color: '#8A8A8E' }} numberOfLines={1}>
                 {showEmail && email ? `${email} • ` : ''}
+              </Text>
+              <Text style={{ fontSize: 11, color: '#8A8A8E' }} numberOfLines={1}>
                 {date}
               </Text>
             </View>
           </View>
 
-          <StatusBadge
-            status={status}
-            label={statusLabel}
-            color={statusColor}
-          />
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+            {onEditPress && (
+              <TouchableOpacity onPress={onEditPress} hitSlop={8} style={{ padding: 2 }}>
+                <FontAwesome6 name="pen" size={12} color="#8A8A8E" iconStyle="solid" />
+              </TouchableOpacity>
+            )}
+            <StatusBadge
+              status={status}
+              label={statusLabel}
+              color={statusColor}
+            />
+          </View>
         </View>
 
         {/* Category */}

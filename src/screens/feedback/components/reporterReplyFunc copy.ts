@@ -9,12 +9,9 @@ import {
   Timestamp,
   where,
 } from 'firebase/firestore';
-import { httpsCallable, getFunctions } from 'firebase/functions';
 import { Alert } from 'react-native';
 import { auth, firestore } from '../../../firebase/firebaseConfig';
 import notifyCompany from '../../../notifications/notifyCompany';
-
-const functions = getFunctions(undefined, 'asia-southeast2');
 
 // ==================== TYPES ====================
 
@@ -32,7 +29,7 @@ export interface CategoryOption {
   icon: string;
 }
 
-export type FeedbackStatus = 'pending' | 'viewed' | 'replied' | string;
+export type FeedbackStatus = 'pending' | 'viewed' | 'replied' | 'new' | 'seen' | 'resolved' | string;
 
 export interface FeedbackItem {
   id: string;
@@ -43,6 +40,17 @@ export interface FeedbackItem {
   createdAt?: Timestamp;
   repliedAt?: Timestamp;
   repliedBy?: string;
+}
+
+export interface FeedbackSubmission {
+  uid: string;
+  name: string | null;
+  email: string | null;
+  role: string | null;
+  category: Category;
+  message: string;
+  status: 'pending';
+  createdAt: ReturnType<typeof serverTimestamp>;
 }
 
 // ==================== CONSTANTS ====================
@@ -58,12 +66,18 @@ export const STATUS_LABEL: Record<string, string> = {
   pending: 'Pending',
   viewed: 'Viewed',
   replied: 'Replied',
+  new: 'Pending',
+  seen: 'Viewed',
+  resolved: 'Replied',
 };
 
 export const STATUS_COLOR: Record<string, string> = {
   pending: '#8E8E93',
   viewed: '#FF9F0A',
   replied: '#34C759',
+  new: '#8E8E93',
+  seen: '#FF9F0A',
+  resolved: '#34C759',
 };
 
 export const CATEGORY_ICON: Record<string, string> = {
@@ -75,6 +89,9 @@ export const CATEGORY_ICON: Record<string, string> = {
 
 // ==================== UTILITY FUNCTIONS ====================
 
+/**
+ * Format Firestore timestamp to readable date string
+ */
 export function formatDate(ts?: Timestamp): string {
   if (!ts) return '';
   return ts.toDate().toLocaleString('en-PH', {
@@ -86,64 +103,81 @@ export function formatDate(ts?: Timestamp): string {
   });
 }
 
+/**
+ * Check if feedback is closed (replied)
+ */
 export function isFeedbackClosed(item: FeedbackItem): boolean {
   return item.status === 'replied' || !!item.reply;
 }
 
+/**
+ * Get status label with fallback
+ */
 export function getStatusLabel(status: string): string {
   return STATUS_LABEL[status] ?? status;
 }
 
+/**
+ * Get status color with fallback
+ */
 export function getStatusColor(status: string): string {
   return STATUS_COLOR[status] ?? '#8E8E93';
 }
 
+/**
+ * Get category icon with fallback
+ */
 export function getCategoryIcon(category: string): string {
   return CATEGORY_ICON[category] ?? 'ellipsis';
 }
 
+/**
+ * Validate feedback message
+ */
 export function validateFeedbackMessage(message: string): boolean {
   return message.trim().length > 0;
 }
 
+/**
+ * Get user ID from auth
+ */
 export function getCurrentUserId(): string | null {
   return auth.currentUser?.uid ?? null;
 }
 
+/**
+ * Check if user is logged in
+ */
 export function isUserLoggedIn(): boolean {
   return !!auth.currentUser?.uid;
 }
 
 // ==================== DATABASE FUNCTIONS ====================
 
+/**
+ * Subscribe to user's feedback history
+ */
 export function subscribeToUserFeedback(
   uid: string,
   onData: (items: FeedbackItem[]) => void,
   onError?: (error: Error) => void
 ) {
-  const q = query(
-    collection(firestore, 'transactions'),
-    where('uid', '==', uid),
-    where('type', '==', 'feedback')
-  );
+  const q = query(collection(firestore, 'feedback'), where('uid', '==', uid));
 
   return onSnapshot(
     q,
     (snapshot) => {
-      const items: FeedbackItem[] = snapshot.docs.map((d) => {
-        const data = d.data();
-        const details = data.details ?? {};
-        return {
-          id: d.id,
-          category: details.category,
-          message: details.message,
-          status: data.status ?? 'pending',
-          reply: details.reply,
-          createdAt: data.createdAt,
-          repliedAt: data.status === 'replied' ? data.updatedAt : undefined,
-          repliedBy: details.repliedBy,
-        };
-      });
+      const items: FeedbackItem[] = snapshot.docs.map((d) => ({
+        id: d.id,
+        category: d.data().category,
+        message: d.data().message,
+        status: d.data().status ?? 'pending',
+        reply: d.data().reply,
+        createdAt: d.data().createdAt,
+        repliedAt: d.data().repliedAt,
+        repliedBy: d.data().repliedBy,
+      }));
+      // Sort by newest first
       items.sort((a, b) => (b.createdAt?.toMillis() ?? 0) - (a.createdAt?.toMillis() ?? 0));
       onData(items);
     },
@@ -154,6 +188,9 @@ export function subscribeToUserFeedback(
   );
 }
 
+/**
+ * Submit new feedback
+ */
 export async function submitFeedback(
   category: Category,
   message: string,
@@ -170,23 +207,20 @@ export async function submitFeedback(
   }
 
   try {
-    const createTawidTransaction = httpsCallable(functions, 'createTawidTransaction');
-    const result = await createTawidTransaction({
+    const submission: FeedbackSubmission = {
       uid,
-      type: 'feedback',
-      title: `Feedback • ${category}`,
+      name: userData?.name ?? null,
+      email: userData?.email ?? null,
+      role: userData?.role ?? null,
+      category,
+      message: trimmed,
       status: 'pending',
-      details: {
-        category,
-        message: trimmed,
-        reporterName: userData?.name,
-        reporterEmail: userData?.email,
-        reporterRole: userData?.role,
-      },
-    });
+      createdAt: serverTimestamp(),
+    };
 
-    const { id } = result.data as { id: string };
+    const docRef = await addDoc(collection(firestore, 'feedback'), submission);
 
+    // Send notification to company
     try {
       await notifyCompany({
         title: `New Feedback • ${category}`,
@@ -196,41 +230,18 @@ export async function submitFeedback(
       console.error('Notification failed:', notifError);
     }
 
-    return id;
+    return docRef.id;
   } catch (error) {
     console.error('Error submitting feedback:', error);
     throw new Error('Failed to send feedback. Please try again.');
   }
 }
 
-/**
- * Edit sariling feedback (message/category). Puwede anytime, kahit
- * may reply na — backend lang ang bahalang mag-restrict sa allowed fields.
- */
-export async function editFeedback(
-  item: FeedbackItem,
-  category: Category,
-  message: string
-): Promise<void> {
-  const trimmed = message.trim();
-  if (!trimmed) {
-    throw new Error('Feedback message cannot be empty');
-  }
-
-  try {
-    const updateTawidTransaction = httpsCallable(functions, 'updateTawidTransaction');
-    await updateTawidTransaction({
-      transactionId: item.id,
-      details: { category, message: trimmed },
-    });
-  } catch (error) {
-    console.error('Error editing feedback:', error);
-    throw new Error('Failed to update feedback. Please try again.');
-  }
-}
-
 // ==================== ERROR HANDLING ====================
 
+/**
+ * Handle feedback errors with user-friendly messages
+ */
 export function handleFeedbackError(error: unknown): string {
   if (error instanceof Error) {
     return error.message;
@@ -238,15 +249,24 @@ export function handleFeedbackError(error: unknown): string {
   return 'An unexpected error occurred while submitting feedback.';
 }
 
+/**
+ * Show error alert for feedback failures
+ */
 export function showFeedbackErrorAlert(error: unknown): void {
   const message = handleFeedbackError(error);
   Alert.alert('Error', message);
 }
 
+/**
+ * Show validation error alert
+ */
 export function showValidationErrorAlert(): void {
   Alert.alert('Empty Feedback', 'Please write your feedback before submitting.');
 }
 
+/**
+ * Show login required alert
+ */
 export function showLoginRequiredAlert(): void {
   Alert.alert('Not Logged In', 'Please log in to send feedback.');
 }
