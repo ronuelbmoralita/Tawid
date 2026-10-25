@@ -5,6 +5,7 @@ import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { colors } from '../../../../constants/colors';
 import TawidModal from '../../../../components/tawidModal';
 import { Vessel, subscribeToVessels, addVessel, updateVessel, deleteVessel } from '../dashboardFunctions';
+import { useTabBarSpace } from '../../../../tabStyle';
 
 const VESSEL_TYPES = ['Fastcraft', 'RORO', 'Cargo'];
 
@@ -30,6 +31,9 @@ const VesselForm = ({ initial, formRef }: any) => {
 };
 
 export default function VesselsScreen() {
+
+  const bottomSpace = useTabBarSpace();
+
   const [vessels, setVessels] = useState<Vessel[]>([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState({ visible: false, title: '', content: null, action: null, saving: false });
@@ -87,7 +91,7 @@ export default function VesselsScreen() {
       </View>
       {vessels.length === 0 ? 
         <Text style={{ color: 'rgba(0,0,0,0.4)', textAlign: 'center', padding: 20 }}>No vessels yet. Add one!</Text> :
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: bottomSpace }}>
           {vessels.map((vessel) => (
             <View key={vessel.id} style={{ backgroundColor: colors.white, padding: 14, borderRadius: 10, marginBottom: 8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderColor: colors.blur(0.3) }}>
               <View>

@@ -89,7 +89,7 @@ export default function LoginPermission({
                         key={key}
                         color={colors.brand}
                         style={{
-                            paddingHorizontal: 16,
+                            paddingHorizontal: 10,
                             flexDirection: 'row',
                             alignItems: 'center',
                             justifyContent: 'space-between',
@@ -141,7 +141,7 @@ export default function LoginPermission({
                                     fontWeight: '700',
                                     color: colors.white,
                                 }}>
-                                    Tap to Allow
+                                    Allow
                                 </Text>
                             </TouchableOpacity>
                         </Animated.View>

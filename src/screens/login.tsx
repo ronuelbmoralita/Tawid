@@ -198,7 +198,7 @@ export default function Login() {
             <TouchableOpacity activeOpacity={0.85} onPress={scrollToNext}>
               <Animated.View
                 style={{
-                  height: 56,
+                  height: 50,
                   borderRadius: 28,
                   justifyContent: 'center',
                   alignItems: 'center',
@@ -211,9 +211,9 @@ export default function Login() {
                   width: buttonWidth,
                 }}>
                 {isFinalSlide ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 16 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
                     <FontAwesome6 name="google" size={18} color={colors.white} iconStyle="brand" />
-                    <Text style={{ color: colors.white, fontSize: 15, fontWeight: '700', letterSpacing: 0.2 }}>
+                    <Text style={{ color: colors.white, fontSize: 14, fontWeight: '700', letterSpacing: 0.2 }}>
                       Continue with Google
                     </Text>
                   </View>

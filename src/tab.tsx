@@ -1,12 +1,11 @@
 // tab.tsx
 import * as React from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, View } from 'react-native';
+import { BlurTargetView } from 'expo-blur';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
-import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import PaxHome from './screens/users/passenger/paxHome';
 import Profile from './screens/profile/profile';
@@ -15,9 +14,8 @@ import Feedback from './screens/feedback/feedbackHome';
 import { auth, firestore } from './firebase/firebaseConfig';
 import { useWaving } from './components/waving';
 import { updateNearestPort } from './screens/users/passenger/home/seaNearestPort';
-import { colors } from './constants/colors';
 import { useTransactionCounts } from './firebase/useTransactionCounts';
-import { TawidBadge } from './components/tawidBadge';
+import { TawidTabBar, TabBarBridge, BarSnapshot } from './tabStyle';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -37,74 +35,45 @@ const HOME_BY_ROLE: Record<string, React.ComponentType<{ userData: UserData | nu
   Passenger: PaxHome,
 };
 
-const TAB_ICONS: Record<string, string> = {
-  MainTab: 'house',
-  Feedback: 'comment-dots',
-  Profile: 'user',
-};
-
 function Tabs({ userData }: { userData: UserData | null }) {
   const HomeComponent = HOME_BY_ROLE[userData?.role ?? ''];
-  const insets = useSafeAreaInsets();
   const { feedbackBadgeCount } = useTransactionCounts(userData);
+  const blurTarget = React.useRef<View>(null);
+  const [bar, setBar] = React.useState<BarSnapshot | null>(null);
 
   if (!HomeComponent) return null;
 
-  // Base height ng tab bar content (icons + labels), hiwalay sa bottom inset.
-  const TAB_BAR_CONTENT_HEIGHT = 60;
-
-  // Dynamic bottom padding — umaadjust sa gesture bar o button nav ng device.
-  // insets.bottom = 0 sa mga device na walang on-screen nav (physical buttons),
-  // at may tamang value sa mga device na may gesture bar / nav bar.
-  const bottomPadding = Math.max(insets.bottom, 8);
-
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarActiveTintColor: colors.brand,
-        tabBarInactiveTintColor: 'rgba(60,60,60,0.6)',
-        tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          height: TAB_BAR_CONTENT_HEIGHT + bottomPadding,
-          paddingTop: 8,
-          paddingBottom: bottomPadding,
-          borderTopWidth: 1,
-          borderTopColor: 'rgba(0,0,0,0.1)',
-        },
-        tabBarIcon: ({ focused, color }) => (
-          <View style={{ position: 'relative' }}>
-            <FontAwesome6
-              name={TAB_ICONS[route.name] ?? 'circle'}
-              iconStyle="solid"
-              size={focused ? 25 : 18}
-              color={color}
-            />
-            {route.name === 'Feedback' && (
-              <TawidBadge
-                count={feedbackBadgeCount}
-                badgeStyle={
-                  focused
-                    ? { minWidth: 20, height: 20, top: -6, right: -8 }
-                    : { minWidth: 15, height: 15, top: -3, right: -8 }
-                }
-                textStyle={focused ? { fontSize: 11 } : { fontSize: 9 }}
-              />
-            )}
-          </View>
-        ),
-      })}
-    >
-      <Tab.Screen name="MainTab" options={{ title: 'Home' }}>
-        {() => <HomeComponent userData={userData} />}
-      </Tab.Screen>
-      <Tab.Screen name="Feedback" options={{ title: 'Feedback' }}>
-        {() => <Feedback userData={userData} />}
-      </Tab.Screen>
-      <Tab.Screen name="Profile" options={{ title: 'Profile' }}>
-        {() => <Profile userData={userData} />}
-      </Tab.Screen>
-    </Tab.Navigator>
+    <View style={{ flex: 1 }}>
+      {/* Ito ang "background" na ibo-blur ng pill. Dapat nasa labas nito ang BlurView. */}
+      <BlurTargetView ref={blurTarget} style={{ flex: 1 }}>
+        <Tab.Navigator
+          tabBar={(props) => (
+            <TabBarBridge state={props.state} navigation={props.navigation} onChange={setBar} />
+          )}
+          screenOptions={{ headerShown: false }}
+        >
+          <Tab.Screen name="MainTab" options={{ title: 'Home' }}>
+            {() => <HomeComponent userData={userData} />}
+          </Tab.Screen>
+          <Tab.Screen name="Feedback" options={{ title: 'Feedback' }}>
+            {() => <Feedback userData={userData} />}
+          </Tab.Screen>
+          <Tab.Screen name="Profile" options={{ title: 'Profile' }}>
+            {() => <Profile userData={userData} />}
+          </Tab.Screen>
+        </Tab.Navigator>
+      </BlurTargetView>
+
+      {bar && (
+        <TawidTabBar
+          state={bar.state}
+          navigation={bar.navigation}
+          blurTarget={blurTarget}
+          badges={{ Feedback: feedbackBadgeCount }}
+        />
+      )}
+    </View>
   );
 }
 

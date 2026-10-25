@@ -6,6 +6,7 @@ import { colors } from '../../../../constants/colors';
 import { Port, Vessel, Route, Trip, subscribeToPorts, subscribeToVessels, subscribeToRoutes, subscribeToTripsForRoute, addRoute, deleteRoute, addTrip, updateTrip, deleteTrip, getTripsByRoute, getVesselName } from '../dashboardFunctions';
 import TawidModal from '../../../../components/tawidModal';
 import { broadcastNotif } from '../../../../notifications/broadcastNotif';
+import { useTabBarSpace } from '../../../../tabStyle';
 
 // Route Form Component (unchanged - already compact)
 const RouteForm = ({ initial, ports, routes, formRef }: any) => {
@@ -116,6 +117,9 @@ const TripForm = ({ initial, vessels, formRef, isEdit = false }: any) => {
 };
 
 export default function RoutesScreen() {
+
+  const bottomSpace = useTabBarSpace();
+
   const [ports, setPorts] = useState<Port[]>([]);
   const [vessels, setVessels] = useState<Vessel[]>([]);
   const [routes, setRoutes] = useState<Route[]>([]);
@@ -158,7 +162,7 @@ export default function RoutesScreen() {
     });
     if (!avail.length) return showAlert('All Used', 'All routes used');
     const formRef = { current: { originPortId: avail[0].id, destinationPortId: '' } };
-    showModal('Add Route', 
+    showModal('Add Route',
       <RouteForm initial={{ originPortId: avail[0].id, destinationPortId: '' }} ports={ports} routes={routes} formRef={formRef} />,
       async () => {
         setModal(prev => ({ ...prev, saving: true }));
@@ -167,7 +171,7 @@ export default function RoutesScreen() {
           setModal(prev => ({ ...prev, saving: false }));
           return showAlert('Error', !originPortId || !destinationPortId ? 'Select both ports' : originPortId === destinationPortId ? 'Must be different' : 'Route exists');
         }
-        try { await addRoute(originPortId, destinationPortId); showAlert('Success', 'Route added!'); setModal(prev => ({ ...prev, visible: false, saving: false })); } 
+        try { await addRoute(originPortId, destinationPortId); showAlert('Success', 'Route added!'); setModal(prev => ({ ...prev, visible: false, saving: false })); }
         catch { showAlert('Error', 'Failed to add route'); setModal(prev => ({ ...prev, saving: false })); }
       }
     );
@@ -176,9 +180,11 @@ export default function RoutesScreen() {
   const handleDeleteRoute = (route: Route) => {
     Alert.alert('Delete Route', `Delete "${getPortName(route.originPortId)} → ${getPortName(route.destinationPortId)}"?`, [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: async () => {
-        try { await deleteRoute(route.id); showAlert('Deleted', 'Route deleted'); } catch { showAlert('Error', 'Failed to delete route'); }
-      }}
+      {
+        text: 'Delete', style: 'destructive', onPress: async () => {
+          try { await deleteRoute(route.id); showAlert('Deleted', 'Route deleted'); } catch { showAlert('Error', 'Failed to delete route'); }
+        }
+      }
     ]);
   };
 
@@ -196,7 +202,7 @@ export default function RoutesScreen() {
           setModal(prev => ({ ...prev, saving: false }));
           return showAlert('Error', 'This vessel already has a trip at this time');
         }
-        try { await addTrip(routeId, vesselId, time, status); showAlert('Success', 'Trip added!'); setModal(prev => ({ ...prev, visible: false, saving: false })); } 
+        try { await addTrip(routeId, vesselId, time, status); showAlert('Success', 'Trip added!'); setModal(prev => ({ ...prev, visible: false, saving: false })); }
         catch { showAlert('Error', 'Failed to add trip'); setModal(prev => ({ ...prev, saving: false })); }
       }
     );
@@ -222,9 +228,9 @@ export default function RoutesScreen() {
             const routeName = route ? `${getPortName(route.originPortId)} → ${getPortName(route.destinationPortId)}` : '';
             let msg = timeChanged && statusChanged ? `Ka-Tawid, na-update ang iskedyul ng ${vesselName} (${routeName}): bagong oras "${time}", at ang status ay "${status}" na.`
               : timeChanged ? `Ka-Tawid, naiba ang oras ng iskedyul ng ${vesselName} (${routeName}) sa "${time}".`
-              : status === 'Sailing' ? `Ka-Tawid, nagbago ang status ng ${vesselName} (${routeName}) sa "${status}". Tuloy na po ang biyahe.`
-              : status === 'No Sailing' ? `Ka-Tawid, nagbago ang status ng ${vesselName} (${routeName}) sa "${status}". Paumanhin, pansamantalang walang biyahe. Maghintay lamang po sa abiso kung may pagbabago.`
-              : `Ka-Tawid, nagbago ang status ng ${vesselName} (${routeName}) sa "${status}".`;
+                : status === 'Sailing' ? `Ka-Tawid, nagbago ang status ng ${vesselName} (${routeName}) sa "${status}". Tuloy na po ang biyahe.`
+                  : status === 'No Sailing' ? `Ka-Tawid, nagbago ang status ng ${vesselName} (${routeName}) sa "${status}". Paumanhin, pansamantalang walang biyahe. Maghintay lamang po sa abiso kung may pagbabago.`
+                    : `Ka-Tawid, nagbago ang status ng ${vesselName} (${routeName}) sa "${status}".`;
             broadcastNotif(msg);
           }
         } catch { showAlert('Error', 'Failed to update trip'); setModal(prev => ({ ...prev, saving: false })); }
@@ -235,9 +241,11 @@ export default function RoutesScreen() {
   const handleDeleteTrip = (routeId: string, trip: Trip) => {
     Alert.alert('Delete Trip', `Delete trip at ${trip.time}?`, [
       { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: async () => {
-        try { await deleteTrip(routeId, trip.id); showAlert('Deleted', 'Trip deleted'); } catch { showAlert('Error', 'Failed to delete trip'); }
-      }}
+      {
+        text: 'Delete', style: 'destructive', onPress: async () => {
+          try { await deleteTrip(routeId, trip.id); showAlert('Deleted', 'Trip deleted'); } catch { showAlert('Error', 'Failed to delete trip'); }
+        }
+      }
     ]);
   };
 
@@ -256,7 +264,7 @@ export default function RoutesScreen() {
         </TouchableOpacity>
       </View>
       {!routes.length ? <Text style={{ color: 'rgba(0,0,0,0.4)', textAlign: 'center', padding: 20 }}>No routes yet.</Text> :
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: bottomSpace }}>
           {routes.map((route) => {
             const trips = getTripsByRoute(tripsMap, route.id);
             const showAll = expandedTrips[route.id] || false;

@@ -5,6 +5,7 @@ import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { colors } from '../../../../constants/colors';
 import TawidModal from '../../../../components/tawidModal';
 import { Port, subscribeToPorts, addPort, updatePort, deletePort } from '../dashboardFunctions';
+import { useTabBarSpace } from '../../../../tabStyle';
 
 const PortForm = ({ initial, formRef }: any) => {
   const [local, setLocal] = useState(initial);
@@ -34,6 +35,9 @@ const PortForm = ({ initial, formRef }: any) => {
 };
 
 export default function PortsScreen() {
+
+  const bottomSpace = useTabBarSpace();
+  
   const [ports, setPorts] = useState<Port[]>([]);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState({ visible: false, title: '', content: null, action: null, saving: false });
@@ -105,7 +109,7 @@ export default function PortsScreen() {
       </View>
       {ports.length === 0 ? 
         <Text style={{ color: 'rgba(0,0,0,0.4)', textAlign: 'center', padding: 20 }}>No ports yet. Add one!</Text> :
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: bottomSpace }}>
           {ports.map((port) => (
             <View key={port.id} style={{ backgroundColor: colors.white, padding: 14, borderRadius: 10, marginBottom: 8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderWidth: 1, borderColor: colors.blur(0.3) }}>
               <View>

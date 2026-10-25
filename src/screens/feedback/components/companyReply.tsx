@@ -40,6 +40,7 @@ import {
   FILTER_OPTIONS,
 } from './companyReplyFunc';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
+import { useTabBarSpace } from '../../../tabStyle';
 
 export default function CompanyReply({ userData }: { userData: UserData | null }) {
   // State — feedback list + reply
@@ -398,11 +399,13 @@ export default function CompanyReply({ userData }: { userData: UserData | null }
 
   // ========== Main Render ==========
 
+  const bottomSpace = useTabBarSpace();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }} edges={['top', 'left', 'right']}>
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 15, paddingBottom: 40 }}
+        contentContainerStyle={{ padding: 15, paddingBottom: bottomSpace }}
         keyboardShouldPersistTaps="handled"
       >
         <Header

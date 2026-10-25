@@ -1,13 +1,6 @@
 // screens/passenger/components/schedule.tsx
-import React, { useEffect, useState, useRef } from 'react';
-import {
-  Text,
-  View,
-  Animated,
-  TouchableOpacity,
-  FlatList,
-  Alert,
-} from 'react-native';
+import React, { useEffect, useState, useRef, useMemo, useCallback, memo } from 'react';
+import { Text, View, Animated, TouchableOpacity } from 'react-native';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { colors } from '../../../../constants/colors';
 import { subscribeToSuspension } from '../../dashboard/dashboardFunctions';
@@ -18,6 +11,7 @@ import {
 } from '../../../../constants/animation';
 import ScheduleModal, { ScheduleModalRef } from './scheduleModal';
 import TawidCard from '../../../../components/tawidCard';
+import { useTabBarSpace } from '../../../../tabStyle';
 
 interface ScheduleItem {
   vessel: string;
@@ -33,14 +27,25 @@ interface ScheduleProps {
   children?: React.ReactNode;
 }
 
+interface SectionProps {
+  title: string;
+  isSailing: boolean;
+  data: ScheduleItem[];
+  startDelay?: number;
+  isSuspended?: boolean;
+  onBookPress: () => void;
+}
+
 const vesselStyles = {
   Fastcraft: { icon: 'bolt', color: '#3B82F6' },
   RORO: { icon: 'ship', color: colors.brand },
   Cargo: { icon: 'box', color: colors.orange },
 } as const;
 
+const FALLBACK_VESSEL = { icon: 'ferry', color: '#6B7280' } as const;
+
 const getVesselStyle = (type: string) =>
-  vesselStyles[type as keyof typeof vesselStyles] || { icon: 'ferry', color: '#6B7280' };
+  vesselStyles[type as keyof typeof vesselStyles] ?? FALLBACK_VESSEL;
 
 const formatUpdatedAt = (timestamp: any): string => {
   if (!timestamp?.toDate) return '';
@@ -57,7 +62,7 @@ const formatUpdatedAt = (timestamp: any): string => {
 };
 
 // ============ TRIP ROW ============
-const TripRow = ({
+const TripRow = memo(function TripRow({
   trip,
   animationDelay = 0,
   isSuspended = false,
@@ -67,7 +72,7 @@ const TripRow = ({
   animationDelay?: number;
   isSuspended?: boolean;
   onBookPress: () => void;
-}) => {
+}) {
   const { opacity, transform } = useStaggeredItem(animationDelay, 0, 50);
   const isNoSailing = trip.status === 'No Sailing' || isSuspended;
   const style = getVesselStyle(trip.vesselType);
@@ -138,13 +143,7 @@ const TripRow = ({
           minWidth: 70,
           alignItems: 'center',
         }}
-        onPress={() =>
-          isNoSailing
-            ? Alert.alert('Not Available', 'This trip is not currently sailing', [
-              { text: 'OK' },
-            ])
-            : onBookPress()
-        }
+        onPress={onBookPress}
         disabled={isNoSailing}
         activeOpacity={0.7}
       >
@@ -160,43 +159,77 @@ const TripRow = ({
       </TouchableOpacity>
     </Animated.View>
   );
-};
+});
 
 // ============ SCHEDULE SECTION ============
-const ScheduleSection = ({ title, data, startDelay = 0, isSuspended = false, onBookPress }) => {
+const ScheduleSection = memo(function ScheduleSection({
+  title,
+  isSailing,
+  data,
+  startDelay = 0,
+  isSuspended = false,
+  onBookPress,
+}: SectionProps) {
   const { opacity, transform } = useScaleFadeIn(startDelay, 400, 0.95);
-  if (!data.length) return null;
-
-  const isSailing = title === 'SAILING';
-  const color = isSailing ? colors.brand : colors.red;
+  const color = isSailing && !isSuspended ? colors.brand : colors.red;
 
   return (
     <TawidCard color={color} animatedStyle={{ opacity, transform }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', paddingVertical: 4, paddingHorizontal: 10 }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          paddingVertical: 4,
+          paddingHorizontal: 10,
+        }}
+      >
         {isSuspended ? (
-          <FontAwesome6 name="ban" size={11} color={color} iconStyle="solid" style={{ marginRight: 8 }} />
+          <FontAwesome6
+            name="ban"
+            size={11}
+            color={color}
+            iconStyle="solid"
+            style={{ marginRight: 8 }}
+          />
         ) : (
-          <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: color, marginRight: 8 }} />
+          <View
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 5,
+              backgroundColor: color,
+              marginRight: 8,
+            }}
+          />
         )}
-        <Text style={{ fontSize: 14, fontWeight: '700', color, textTransform: 'uppercase', letterSpacing: 1 }}>
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: '700',
+            color,
+            textTransform: 'uppercase',
+            letterSpacing: 1,
+          }}
+        >
           {title}
         </Text>
       </View>
 
-      <FlatList
-        data={data}
-        keyExtractor={(item, i) => `${item.vessel}-${i}-${item.time}`}
-        renderItem={({ item, index }) => (
-          <TripRow trip={item} animationDelay={index} isSuspended={isSuspended} onBookPress={onBookPress} />
-        )}
-        scrollEnabled={false}
-      />
+      {data.map((item, index) => (
+        <TripRow
+          key={`${item.vessel}-${item.time}-${index}`}
+          trip={item}
+          animationDelay={index}
+          isSuspended={isSuspended}
+          onBookPress={onBookPress}
+        />
+      ))}
     </TawidCard>
   );
-};
+});
 
 // ============ NOTICE CARD ============
-const NoticeCard = ({ onPress }: { onPress: () => void }) => {
+const NoticeCard = memo(function NoticeCard({ onPress }: { onPress: () => void }) {
   const { opacity, transform } = useSlideUpFadeIn(300, 400, 30);
 
   return (
@@ -213,7 +246,12 @@ const NoticeCard = ({ onPress }: { onPress: () => void }) => {
       }}
     >
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-        <FontAwesome6 name="triangle-exclamation" size={13} color={colors.orange} iconStyle="solid" />
+        <FontAwesome6
+          name="triangle-exclamation"
+          size={13}
+          color={colors.orange}
+          iconStyle="solid"
+        />
         <Text style={{ fontSize: 14, fontWeight: '600', color: colors.orange }}>
           Tawid Not Yet Activated
         </Text>
@@ -239,7 +277,7 @@ const NoticeCard = ({ onPress }: { onPress: () => void }) => {
       </TouchableOpacity>
     </Animated.View>
   );
-};
+});
 
 // ============ MAIN ============
 const Schedule: React.FC<ScheduleProps> = ({
@@ -248,6 +286,9 @@ const Schedule: React.FC<ScheduleProps> = ({
   routeUpdatedAt,
   children,
 }) => {
+
+  const bottomSpace = useTabBarSpace();
+
   const [isSuspended, setIsSuspended] = useState(false);
   const petitionRef = useRef<ScheduleModalRef>(null);
   const { opacity, transform } = useSlideUpFadeIn(200, 600, 30);
@@ -257,78 +298,69 @@ const Schedule: React.FC<ScheduleProps> = ({
     return () => unsub();
   }, []);
 
-  const handleRequestActivation = () => petitionRef.current?.open();
+  const handleRequestActivation = useCallback(() => petitionRef.current?.open(), []);
 
-  const sailingTrips = schedule.filter((t) => t.status === 'Sailing');
-  const noSailingTrips = schedule.filter((t) => t.status === 'No Sailing');
+  const sections = useMemo(() => {
+    const sailing = schedule.filter((t) => t.status === 'Sailing');
+    const noSailing = schedule.filter((t) => t.status === 'No Sailing');
 
-  const sections = [
-    {
-      id: 'sailing',
-      title: isSuspended ? 'CANCELLED' : 'SAILING',
-      data: sailingTrips,
-    },
-    {
-      id: 'nosailing',
-      title: isSuspended ? 'CANCELLED' : 'NO SAILING',
-      data: noSailingTrips,
-    },
-  ].filter((s) => s.data.length > 0);
+    return [
+      {
+        id: 'sailing',
+        isSailing: true,
+        title: isSuspended ? 'CANCELLED' : 'SAILING',
+        data: sailing,
+      },
+      {
+        id: 'nosailing',
+        isSailing: false,
+        title: isSuspended ? 'CANCELLED' : 'NO SAILING',
+        data: noSailing,
+      },
+    ].filter((s) => s.data.length > 0);
+  }, [schedule, isSuspended]);
+
+  const lastUpdated = useMemo(() => formatUpdatedAt(routeUpdatedAt), [routeUpdatedAt]);
 
   return (
     <>
       <Animated.ScrollView
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingTop: 0 }}
+        contentContainerStyle={{ paddingTop: 0, paddingBottom: bottomSpace }}
         style={{ opacity, transform }}
       >
-        <View style={{
-          paddingHorizontal: 15,
-          paddingBottom:15,
-          gap: 15,
-        }}>
+        <View style={{ paddingHorizontal: 15, paddingBottom: 15, gap: 15 }}>
           {children && <View>{children}</View>}
 
           {!isRouteSelected ? (
             <View style={{ padding: 30, alignItems: 'center' }}>
-              <Text
-                style={{ color: 'rgba(0,0,0,0.6)', fontSize: 16, textAlign: 'center' }}
-              >
+              <Text style={{ color: 'rgba(0,0,0,0.6)', fontSize: 16, textAlign: 'center' }}>
                 Please select both Origin and Destination ports to view the schedule
               </Text>
             </View>
           ) : schedule.length === 0 ? (
             <View style={{ padding: 30, alignItems: 'center' }}>
-              <Text
-                style={{ color: 'rgba(0,0,0,0.6)', fontSize: 16, textAlign: 'center' }}
-              >
+              <Text style={{ color: 'rgba(0,0,0,0.6)', fontSize: 16, textAlign: 'center' }}>
                 No trips available for this route
               </Text>
             </View>
           ) : (
             <>
-              {routeUpdatedAt && (
+              {!!lastUpdated && (
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                    <FontAwesome6 name="clock" size={10} color="rgba(0,0,0,0.55)" iconStyle="solid" />
-                    <Text
-                      style={{
-                        fontSize: 11,
-                        color: 'rgba(0,0,0,0.55)',
-                        fontWeight: '500',
-                      }}
-                    >
+                    <FontAwesome6
+                      name="clock"
+                      size={10}
+                      color="rgba(0,0,0,0.55)"
+                      iconStyle="solid"
+                    />
+                    <Text style={{ fontSize: 11, color: 'rgba(0,0,0,0.55)', fontWeight: '500' }}>
                       Last updated
                     </Text>
                   </View>
-                  <Text
-                    style={{
-                      fontSize: 11,
-                      color: 'rgba(0,0,0,0.75)',
-                      fontWeight: '600',
-                    }}
-                  >
-                    {formatUpdatedAt(routeUpdatedAt)}
+                  <Text style={{ fontSize: 11, color: 'rgba(0,0,0,0.75)', fontWeight: '600' }}>
+                    {lastUpdated}
                   </Text>
                 </View>
               )}
@@ -337,6 +369,7 @@ const Schedule: React.FC<ScheduleProps> = ({
                 <ScheduleSection
                   key={section.id}
                   title={section.title}
+                  isSailing={section.isSailing}
                   data={section.data}
                   startDelay={i * 150}
                   isSuspended={isSuspended}

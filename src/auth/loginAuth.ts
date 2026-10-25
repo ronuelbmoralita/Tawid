@@ -9,6 +9,7 @@ import {
   GoogleAuthProvider,
   signInWithCredential,
   signOut,
+  getAdditionalUserInfo,
   User,
 } from 'firebase/auth';
 import {
@@ -17,18 +18,18 @@ import {
   getDoc,
   serverTimestamp,
 } from 'firebase/firestore';
+import { getFunctions, httpsCallable } from 'firebase/functions';
 import { auth, firestore } from '../firebase/firebaseConfig';
 import { saveTransactionSilently } from '../firebase/tawidTransaction';
 import { Alert } from 'react-native';
 import { waving } from '../components/waving';
-import * as Notifications from 'expo-notifications';
-import { loginCode } from './loginCode';
 import { welcomeNotif } from '../notifications/welcomeNotif';
 import notifyCompany from '../notifications/notifyCompany';
 
 // Configure Google Sign-In (do this once, ideally at app startup)
 GoogleSignin.configure({
   webClientId: '19479591711-g3mdv7p70i62efpc01qk2tsetg6fin45.apps.googleusercontent.com',
+  iosClientId: '19479591711-pkk5t18ocmkvgktco6fgc40p7j2reup9.apps.googleusercontent.com',
   offlineAccess: true,
   forceCodeForRefreshToken: true,
 });
@@ -50,7 +51,35 @@ type LoginCallback = (result: LoginResult) => void;
 type LogoutCallback = (result: LogoutResult) => void;
 
 /**
+ * Ensures the user has a complete profile (role, code, etc.)
+ * Calls the Gen2 callable `tawidCreateUser` if the Firestore doc
+ * is missing or has no `role` field. Works for both new and existing users.
+ */
+async function ensureProfileComplete(uid: string): Promise<void> {
+  try {
+    const userDocRef = doc(firestore, 'users', uid);
+    const snap = await getDoc(userDocRef);
+
+    if (!snap.exists() || !snap.data()?.role) {
+      const functions = getFunctions(undefined, 'asia-southeast2');
+      const tawidCreateUser = httpsCallable(functions, 'tawidCreateUser');
+      await tawidCreateUser();
+    }
+  } catch (err) {
+    console.error('ensureProfileComplete failed:', err);
+    // Hindi tayo mag-throw para hindi masira ang login flow
+  }
+}
+
+/**
  * Google Login – Optimized for instant app entry
+ *
+ * Architecture note:
+ * - role / code / uid / createdAt are handled by the Gen2 callable
+ *   `tawidCreateUser` (client-triggered fallback + backfill).
+ * - We no longer rely on an Auth onCreate trigger.
+ * - RootStack (App.tsx) still waits for `role` via onSnapshot before
+ *   switching to the Tab stack as a safety net.
  */
 export const googleLogin = async (callback?: LoginCallback): Promise<void> => {
   // Notify loading start
@@ -81,75 +110,53 @@ export const googleLogin = async (callback?: LoginCallback): Promise<void> => {
     const userCredential = await signInWithCredential(auth, googleCredential);
     const firebaseUser = userCredential.user;
 
+    // Authoritative "is this the user's first ever sign-in" flag
+    const isNewUser = getAdditionalUserInfo(userCredential)?.isNewUser ?? false;
+    const displayName = userInfo.name ?? firebaseUser.displayName ?? 'User';
+
+    // === Ensure profile is complete (role/code) ===
+    // Important for existing accounts that don't have a full doc yet
+    // and as a safety net for new users.
+    await ensureProfileComplete(firebaseUser.uid);
+
     // === IMMEDIATELY REPORT SUCCESS ===
-    // This triggers onAuthStateChanged → app switches to Tab instantly
+    // This triggers onAuthStateChanged → app switches to Tab
+    // (App.tsx's RootStack additionally waits for `role` on the user doc)
     callback?.({ success: true, user: firebaseUser });
 
-    // === BACKGROUND: Sync user data to Firestore ===
-    // Fire-and-forget – does not block UI
+    // === BACKGROUND: Sync non-critical profile fields ===
     const userDocRef = doc(firestore, 'users', firebaseUser.uid);
 
-    getDoc(userDocRef)
-      .then(async (snap) => {
-        const baseData = {
-          email: userInfo.email ?? firebaseUser.email,
-          name: userInfo.name ?? firebaseUser.displayName ?? 'User',
-          photo: userInfo.photo ?? firebaseUser.photoURL ?? '',
-          lastLoginAt: serverTimestamp(),
-        };
-
-        if (!snap.exists()) {
-          // New user - generate code (checked against Firestore for uniqueness)
-          const code = await loginCode();
-
-          // Check current push notification permission status (hindi ito
-          // humihingi ng permission — check lang; ang paghingi ay trabaho
-          // ng saveToken() sa notifications/setupNotif.ts)
-          const { status } = await Notifications.getPermissionsAsync();
-          const notificationsEnabled = status === 'granted';
-
-          const newUserData = {
-            ...baseData,
+    setDoc(
+      userDocRef,
+      {
+        email: userInfo.email ?? firebaseUser.email,
+        name: displayName,
+        photo: userInfo.photo ?? firebaseUser.photoURL ?? '',
+        lastLoginAt: serverTimestamp(),
+      },
+      { merge: true }
+    )
+      .then(() => {
+        if (isNewUser) {
+          // Fire-and-forget welcome transaction
+          saveTransactionSilently({
             uid: firebaseUser.uid,
-            code,
-            role: 'Passenger',
-            notificationsEnabled,
-            createdAt: serverTimestamp(),
-          };
-
-          return setDoc(userDocRef, newUserData).then(() => {
-            // Fire-and-forget welcome transaction — hindi dapat maka-block sa sign-in flow
-            saveTransactionSilently({
-              uid: firebaseUser.uid,
-              type: 'welcome',
-              status: 'unread',
-              title: `Welcome to Tawid, ${newUserData.name}!`,
-              details: {
-                message:
-                  'Thanks for downloading Tawid! View available trips and schedules, get notified of sea advisories before you travel, and check real-time port updates.',
-              },
-            });
-
-            // NOTE: sa puntong ito, malamang WALA pang `expoToken` yung
-            // bagong user doc kung saveToken() ay tinatawag lang sa
-            // splash/home screen pagkatapos ng sign-in (hindi kasabay
-            // nito). Kung ganun, itong welcomeNotif() call ay walang
-            // maidadalang push dahil wala pang token sa oras na ito —
-            // babalik lang siya nang tahimik (see welcomeNotif.tsx).
-            // Kailangan malaman muna kung kailan ta-trigger si
-            // saveToken() para malaman kung dapat ba dito i-trigger ito,
-            // o sa ibang lugar (e.g. pagkatapos ma-save ang token).
-            welcomeNotif(firebaseUser.uid, newUserData.name);
-
-            // Fire-and-forget: notify Company accounts of the new signup
-            notifyCompany({
-              title: 'New Signup',
-              body: `${newUserData.name} just signed up. Email: ${newUserData.email}`,
-            });
+            type: 'welcome',
+            status: 'unread',
+            title: `Welcome to Tawid, ${displayName}!`,
+            details: {
+              message:
+                'Thanks for downloading Tawid! View available trips and schedules, get notified of sea advisories before you travel, and check real-time port updates.',
+            },
           });
-        } else {
-          // Existing user – update relevant fields
-          return setDoc(userDocRef, baseData, { merge: true });
+
+          welcomeNotif(firebaseUser.uid, displayName);
+
+          notifyCompany({
+            title: 'New Signup',
+            body: `${displayName} just signed up. Email: ${userInfo.email ?? firebaseUser.email}`,
+          });
         }
       })
       .catch((err) => {
@@ -201,12 +208,8 @@ export const googleLogout = async (callback?: LogoutCallback): Promise<void> => 
           waving.show();
 
           try {
-            // Optional: Sign out from Google Signin (clears cached account)
             await GoogleSignin.signOut();
-
-            // Critical: Sign out from Firebase Auth
             await signOut(auth);
-
             callback?.({ success: true });
           } catch (error) {
             console.error('Logout error:', error);

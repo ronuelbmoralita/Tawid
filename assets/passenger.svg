@@ -27,8 +27,8 @@
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="px"
      inkscape:zoom="0.81249999"
-     inkscape:cx="124.92308"
-     inkscape:cy="245.53847"
+     inkscape:cx="154.46154"
+     inkscape:cy="228.3077"
      inkscape:window-width="1384"
      inkscape:window-height="842"
      inkscape:window-x="63"
@@ -119,6 +119,19 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"><g
+       id="g4"
+       style="fill:none"
+       transform="matrix(37.503587,0,0,37.503587,-481.70301,-142.97183)"><path
+         d="m 20.153846,6.2894225 c 0,1.2678008 -1.027776,2.2955762 -2.295576,2.2955762 -1.267813,0 -2.295577,-1.0277754 -2.295577,-2.2955762 0,-1.2678124 1.027764,-2.2955763 2.295577,-2.2955763 1.2678,0 2.295576,1.0277639 2.295576,2.2955763 z"
+         fill="#1c274c"
+         id="path1-0"
+         style="fill:#40e0d0;fill-opacity:1;stroke-width:0.229558" /><path
+         fill-rule="evenodd"
+         clip-rule="evenodd"
+         d="m 17.85827,5.1990238 c 0.09508,0 0.172168,0.077083 0.172168,0.1721682 v 0.8469069 l 0.52346,0.5234832 c 0.06724,0.067237 0.06724,0.1762314 0,0.2434688 -0.06724,0.067237 -0.176231,0.067237 -0.243468,0 L 17.736535,6.4111568 c -0.0323,-0.032276 -0.05044,-0.076075 -0.05044,-0.1217343 V 5.371192 c 0,-0.095085 0.07708,-0.1721682 0.172168,-0.1721682 z"
+         fill="#ffffff"
+         id="path2-2"
+         style="fill:#000000;fill-opacity:1;stroke-width:0.229558" /></g><g
        id="g9"
        inkscape:label="passenger"
        style="display:inline"
@@ -204,7 +217,7 @@
            inkscape:label="mouth" /></g></g><g
        id="g13"
        inkscape:label="calendar"
-       transform="translate(21.906449,54.416251)"><rect
+       transform="translate(7.9818845,24.826551)"><rect
          style="fill:#40e0d0;fill-opacity:1;stroke:none;stroke-width:1.11389;stroke-dasharray:none;stroke-opacity:1"
          id="rect2"
          width="155.93221"
@@ -278,7 +291,7 @@
        id="g12"
        transform="translate(-17.71715,49.853658)"
        inkscape:label="ticket"
-       style="display:inline"><path
+       style="display:none"><path
          id="rect1"
          style="fill:#40e0d0;stroke:none;stroke-width:1;stroke-dasharray:none;stroke-opacity:1"
          d="m 28.307694,155.07693 91.187036,0.92467 c 5.69239,17.23273 15.98927,13.38139 20.55514,0.0544 l 32.79104,-0.97907 -3e-5,89.42382 h -32.53322 c -3.10624,-16.08501 -18.20941,-16.36505 -20.92307,0 H 28.307694 Z"
@@ -298,7 +311,7 @@
            y="228.85374">₱</tspan></text></g><g
        id="g10"
        inkscape:label="bell"
-       transform="translate(-107.04509,11.313709)"><path
+       transform="matrix(1.1538103,0,0,1.1538103,-217.9396,146.34199)"><path
          style="fill:#40e0d0;fill-opacity:1;stroke:none;stroke-width:5"
          id="rect8"
          width="26.923077"

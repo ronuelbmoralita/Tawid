@@ -1,0 +1,301 @@
+[debug] [2026-08-17T10:47:37.258Z] ----------------------------------------------------------------------
+[debug] [2026-08-17T10:47:37.265Z] Command:       /opt/homebrew/Cellar/node/26.3.0/bin/node /opt/homebrew/bin/firebase deploy --only functions
+[debug] [2026-08-17T10:47:37.265Z] CLI Version:   15.24.0
+[debug] [2026-08-17T10:47:37.265Z] Platform:      darwin
+[debug] [2026-08-17T10:47:37.266Z] Node Version:  v26.3.0
+[debug] [2026-08-17T10:47:37.266Z] Detected Agent: unknown
+[debug] [2026-08-17T10:47:37.266Z] Time:          Mon Aug 17 2026 18:47:37 GMT+0800 (Philippine Standard Time)
+[debug] [2026-08-17T10:47:37.266Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-08-17T10:47:37.279Z] >>> [apiv2][query] GET https://firebase-public.firebaseio.com/cli.json [none]
+[debug] [2026-08-17T10:47:38.067Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-08-17T10:47:38.067Z] > authorizing via signed-in user (lookaltechnical@gmail.com)
+[debug] [2026-08-17T10:47:38.067Z] [iam] checking project tawid-6f253 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2026-08-17T10:47:38.068Z] Checked if tokens are valid: false, expires at: 1786870697652
+[debug] [2026-08-17T10:47:38.068Z] Checked if tokens are valid: false, expires at: 1786870697652
+[debug] [2026-08-17T10:47:38.068Z] > refreshing access token with scopes: []
+[debug] [2026-08-17T10:47:38.068Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-08-17T10:47:38.068Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-08-17T10:47:44.109Z] <<< [apiv2][status] GET https://firebase-public.firebaseio.com/cli.json 200
+[debug] [2026-08-17T10:47:44.109Z] <<< [apiv2][body] GET https://firebase-public.firebaseio.com/cli.json {"cloudBuildErrorAfter":1594252800000,"cloudBuildWarnAfter":1590019200000,"defaultNode10After":1594252800000,"minVersion":"3.0.5","node8DeploysDisabledAfter":1613390400000,"node8RuntimeDisabledAfter":1615809600000,"node8WarnAfter":1600128000000}
+[debug] [2026-08-17T12:07:21.673Z] ----------------------------------------------------------------------
+[debug] [2026-08-17T12:07:21.676Z] Command:       /opt/homebrew/Cellar/node/26.3.0/bin/node /opt/homebrew/bin/firebase deploy --only functions:tawidCreateUser
+[debug] [2026-08-17T12:07:21.676Z] CLI Version:   15.24.0
+[debug] [2026-08-17T12:07:21.676Z] Platform:      darwin
+[debug] [2026-08-17T12:07:21.676Z] Node Version:  v26.3.0
+[debug] [2026-08-17T12:07:21.676Z] Detected Agent: unknown
+[debug] [2026-08-17T12:07:21.676Z] Time:          Mon Aug 17 2026 20:07:21 GMT+0800 (Philippine Standard Time)
+[debug] [2026-08-17T12:07:21.676Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2026-08-17T12:07:22.331Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-08-17T12:07:22.331Z] > authorizing via signed-in user (lookaltechnical@gmail.com)
+[debug] [2026-08-17T12:07:22.331Z] [iam] checking project tawid-6f253 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2026-08-17T12:07:22.345Z] Checked if tokens are valid: false, expires at: 1786870697652
+[debug] [2026-08-17T12:07:22.345Z] Checked if tokens are valid: false, expires at: 1786870697652
+[debug] [2026-08-17T12:07:22.345Z] > refreshing access token with scopes: []
+[debug] [2026-08-17T12:07:22.346Z] >>> [apiv2][query] POST https://www.googleapis.com/oauth2/v3/token [none]
+[debug] [2026-08-17T12:07:22.346Z] >>> [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-08-17T12:07:28.910Z] <<< [apiv2][status] POST https://www.googleapis.com/oauth2/v3/token 200
+[debug] [2026-08-17T12:07:28.910Z] <<< [apiv2][body] POST https://www.googleapis.com/oauth2/v3/token [omitted]
+[debug] [2026-08-17T12:07:28.927Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253:testIamPermissions [none]
+[debug] [2026-08-17T12:07:28.928Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253:testIamPermissions  x-goog-user-project=tawid-6f253
+[debug] [2026-08-17T12:07:28.928Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-08-17T12:07:29.663Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253:testIamPermissions 200
+[debug] [2026-08-17T12:07:29.663Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2026-08-17T12:07:29.664Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:29.665Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:29.665Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/tawid-6f253/serviceAccounts/tawid-6f253@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2026-08-17T12:07:29.665Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/tawid-6f253/serviceAccounts/tawid-6f253@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2026-08-17T12:07:30.235Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/tawid-6f253/serviceAccounts/tawid-6f253@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2026-08-17T12:07:30.235Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/tawid-6f253/serviceAccounts/tawid-6f253@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'tawid-6f253'...
+[info] 
+[info] i  deploying functions 
+[info] Running command: npm --prefix "$RESOURCE_DIR" run lint
+[info] Running command: npm --prefix "$RESOURCE_DIR" run build
+[info] ✔  functions: Finished running predeploy script. 
+[debug] [2026-08-17T12:07:34.412Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:34.412Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:34.412Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253 [none]
+[debug] [2026-08-17T12:07:34.895Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253 200
+[debug] [2026-08-17T12:07:34.895Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253 {"projectNumber":"19479591711","projectId":"tawid-6f253","lifecycleState":"ACTIVE","name":"Tawid","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2026-03-08T14:15:02.734817Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2026-08-17T12:07:34.898Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:34.898Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:34.898Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/tawid-6f253/adminSdkConfig [none]
+[debug] [2026-08-17T12:07:35.434Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/tawid-6f253/adminSdkConfig 200
+[debug] [2026-08-17T12:07:35.435Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/tawid-6f253/adminSdkConfig {"projectId":"tawid-6f253","storageBucket":"tawid-6f253.firebasestorage.app"}
+[debug] [2026-08-17T12:07:35.438Z] Validating nodejs source
+[debug] [2026-08-17T12:07:36.480Z] > [functions] package.json contents: {
+  "name": "functions",
+  "scripts": {
+    "lint": "eslint --ext .js,.ts . --fix",
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "serve": "npm run build && firebase emulators:start --only functions",
+    "shell": "npm run build && firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "24"
+  },
+  "main": "lib/index.js",
+  "dependencies": {
+    "firebase-admin": "^13.6.0",
+    "firebase-functions": "^7.0.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.12.0",
+    "@typescript-eslint/parser": "^5.12.0",
+    "eslint": "^8.9.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-import": "^2.25.4",
+    "firebase-functions-test": "^3.4.1",
+    "typescript": "^6.0.0"
+  },
+  "private": true
+}
+[debug] [2026-08-17T12:07:36.480Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[debug] [2026-08-17T12:07:36.480Z] Could not find functions.yaml. Must use http discovery
+[debug] [2026-08-17T12:07:36.485Z] Found firebase-functions binary at '/Users/lookaldev/Desktop/Tawid/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8844
+
+[debug] [2026-08-17T12:07:36.840Z] Got response from /__/functions.yaml {"endpoints":{"getPaymongoKey":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","secretEnvironmentVariables":[{"key":"PAYMONGO_KEY"}],"labels":{},"callableTrigger":{},"entryPoint":"getPaymongoKey"},"tawidNotification":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","region":["asia-southeast2"],"labels":{},"callableTrigger":{},"entryPoint":"tawidNotification"},"tawidNotifyAll":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","region":["asia-southeast2"],"labels":{},"scheduleTrigger":{"schedule":"*/5 * * * *","retryConfig":{},"timeZone":"Asia/Manila"},"entryPoint":"tawidNotifyAll"},"createTawidTransaction":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","region":["asia-southeast2"],"labels":{},"callableTrigger":{},"entryPoint":"createTawidTransaction"},"updateTawidTransaction":{"availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"concurrency":null,"serviceAccountEmail":null,"vpc":null,"platform":"gcfv2","region":["asia-southeast2"],"labels":{},"callableTrigger":{},"entryPoint":"updateTawidTransaction"},"tawidCreateUser":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"region":["asia-southeast2"],"eventTrigger":{"eventType":"providers/firebase.auth/eventTypes/user.create","eventFilters":{"resource":"projects/tawid-6f253"},"retry":false},"labels":{},"entryPoint":"tawidCreateUser"}},"specVersion":"v1alpha1","requiredAPIs":[{"api":"cloudscheduler.googleapis.com","reason":"Needed for scheduled functions."}],"extensions":{}}
+[debug] [2026-08-17T12:07:39.863Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:39.864Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:39.864Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v1/projects/tawid-6f253/locations/-/functions [none]
+[debug] [2026-08-17T12:07:41.146Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v1/projects/tawid-6f253/locations/-/functions 200
+[debug] [2026-08-17T12:07:41.146Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v1/projects/tawid-6f253/locations/-/functions {}
+[debug] [2026-08-17T12:07:41.147Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:41.147Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:41.149Z] >>> [apiv2][query] GET https://cloudfunctions.googleapis.com/v2/projects/tawid-6f253/locations/-/functions filter=environment%3D%22GEN_2%22
+[debug] [2026-08-17T12:07:42.781Z] <<< [apiv2][status] GET https://cloudfunctions.googleapis.com/v2/projects/tawid-6f253/locations/-/functions 200
+[debug] [2026-08-17T12:07:42.782Z] <<< [apiv2][body] GET https://cloudfunctions.googleapis.com/v2/projects/tawid-6f253/locations/-/functions {"functions":[{"name":"projects/tawid-6f253/locations/asia-southeast2/functions/tawidNotifyAll","buildConfig":{"build":"projects/19479591711/locations/asia-southeast2/builds/6ff612d0-c871-4f24-9bc3-f8b1a7ab5244","runtime":"nodejs24","entryPoint":"tawidNotifyAll","source":{"storageSource":{"bucket":"gcf-v2-sources-19479591711-asia-southeast2","object":"tawidNotifyAll/function-source.zip","generation":"1786677279697694"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"dockerRepository":"projects/tawid-6f253/locations/asia-southeast2/repositories/gcf-artifacts","sourceProvenance":{"resolvedStorageSource":{"bucket":"gcf-v2-sources-19479591711-asia-southeast2","object":"tawidNotifyAll/function-source.zip","generation":"1786677279697694"}},"dockerRegistry":"ARTIFACT_REGISTRY","serviceAccount":"projects/tawid-6f253/serviceAccounts/19479591711-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/tawid-6f253/locations/asia-southeast2/services/tawidnotifyall","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"tawid-6f253\",\"storageBucket\":\"tawid-6f253.firebasestorage.app\"}","GCLOUD_PROJECT":"tawid-6f253","EVENTARC_CLOUD_EVENT_SOURCE":"projects/tawid-6f253/locations/asia-southeast2/services/tawidNotifyAll","FUNCTION_TARGET":"tawidNotifyAll","LOG_EXECUTION_ID":"true","FUNCTION_SIGNATURE_TYPE":"http"},"maxInstanceCount":20,"ingressSettings":"ALLOW_ALL","uri":"https://tawidnotifyall-idudgavlpa-et.a.run.app","serviceAccountEmail":"19479591711-compute@developer.gserviceaccount.com","availableMemory":"256Mi","allTrafficOnLatestRevision":true,"revision":"tawidnotifyall-00022-kub","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"state":"ACTIVE","updateTime":"2026-08-14T03:14:46.840968514Z","labels":{"firebase-functions-hash":"ad88d1b4379c9289f4e40b363f23664d9815f4fe","deployment-tool":"cli-firebase","deployment-scheduled":"true"},"environment":"GEN_2","url":"https://asia-southeast2-tawid-6f253.cloudfunctions.net/tawidNotifyAll","satisfiesPzs":true,"createTime":"2026-07-19T04:07:04.592472462Z","satisfiesPzi":true},{"name":"projects/tawid-6f253/locations/asia-southeast2/functions/createTawidTransaction","buildConfig":{"build":"projects/19479591711/locations/asia-southeast2/builds/96054910-3973-457e-acf2-b665bc07cbd7","runtime":"nodejs24","entryPoint":"createTawidTransaction","source":{"storageSource":{"bucket":"gcf-v2-sources-19479591711-asia-southeast2","object":"createTawidTransaction/function-source.zip","generation":"1786869289324490"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"dockerRepository":"projects/tawid-6f253/locations/asia-southeast2/repositories/gcf-artifacts","sourceProvenance":{"resolvedStorageSource":{"bucket":"gcf-v2-sources-19479591711-asia-southeast2","object":"createTawidTransaction/function-source.zip","generation":"1786869289324490"}},"dockerRegistry":"ARTIFACT_REGISTRY","serviceAccount":"projects/tawid-6f253/serviceAccounts/19479591711-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/tawid-6f253/locations/asia-southeast2/services/createtawidtransaction","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"tawid-6f253\",\"storageBucket\":\"tawid-6f253.firebasestorage.app\"}","GCLOUD_PROJECT":"tawid-6f253","EVENTARC_CLOUD_EVENT_SOURCE":"projects/tawid-6f253/locations/asia-southeast2/services/createTawidTransaction","FUNCTION_TARGET":"createTawidTransaction","LOG_EXECUTION_ID":"true","FUNCTION_SIGNATURE_TYPE":"http"},"maxInstanceCount":20,"ingressSettings":"ALLOW_ALL","uri":"https://createtawidtransaction-idudgavlpa-et.a.run.app","serviceAccountEmail":"19479591711-compute@developer.gserviceaccount.com","availableMemory":"256Mi","allTrafficOnLatestRevision":true,"revision":"createtawidtransaction-00006-hux","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"state":"ACTIVE","updateTime":"2026-08-16T08:35:32.504663773Z","labels":{"firebase-functions-hash":"6ddbeef8afad2be70d55e2c7de63c60d0ce69783","deployment-tool":"cli-firebase","deployment-callable":"true"},"environment":"GEN_2","url":"https://asia-southeast2-tawid-6f253.cloudfunctions.net/createTawidTransaction","satisfiesPzs":true,"createTime":"2026-08-14T02:32:44.752903331Z","satisfiesPzi":true},{"name":"projects/tawid-6f253/locations/asia-southeast2/functions/tawidNotification","buildConfig":{"build":"projects/19479591711/locations/asia-southeast2/builds/6ff612d0-c871-4f24-9bc3-f8b1a7ab5244","runtime":"nodejs24","entryPoint":"tawidNotification","source":{"storageSource":{"bucket":"gcf-v2-sources-19479591711-asia-southeast2","object":"tawidNotification/function-source.zip","generation":"1786677238210135"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"dockerRepository":"projects/tawid-6f253/locations/asia-southeast2/repositories/gcf-artifacts","sourceProvenance":{"resolvedStorageSource":{"bucket":"gcf-v2-sources-19479591711-asia-southeast2","object":"tawidNotification/function-source.zip","generation":"1786677238210135"}},"dockerRegistry":"ARTIFACT_REGISTRY","serviceAccount":"projects/tawid-6f253/serviceAccounts/19479591711-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/tawid-6f253/locations/asia-southeast2/services/tawidnotification","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"tawid-6f253\",\"storageBucket\":\"tawid-6f253.firebasestorage.app\"}","GCLOUD_PROJECT":"tawid-6f253","EVENTARC_CLOUD_EVENT_SOURCE":"projects/tawid-6f253/locations/asia-southeast2/services/tawidNotification","FUNCTION_TARGET":"tawidNotification","LOG_EXECUTION_ID":"true","FUNCTION_SIGNATURE_TYPE":"http"},"maxInstanceCount":20,"ingressSettings":"ALLOW_ALL","uri":"https://tawidnotification-idudgavlpa-et.a.run.app","serviceAccountEmail":"19479591711-compute@developer.gserviceaccount.com","availableMemory":"256Mi","allTrafficOnLatestRevision":true,"revision":"tawidnotification-00004-dob","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"state":"ACTIVE","updateTime":"2026-08-14T03:14:46.057141695Z","labels":{"deployment-tool":"cli-firebase","deployment-callable":"true","firebase-functions-hash":"ad88d1b4379c9289f4e40b363f23664d9815f4fe"},"environment":"GEN_2","url":"https://asia-southeast2-tawid-6f253.cloudfunctions.net/tawidNotification","satisfiesPzs":true,"createTime":"2026-07-15T21:38:42.125295409Z","satisfiesPzi":true},{"name":"projects/tawid-6f253/locations/asia-southeast2/functions/updateTawidTransaction","buildConfig":{"build":"projects/19479591711/locations/asia-southeast2/builds/96054910-3973-457e-acf2-b665bc07cbd7","runtime":"nodejs24","entryPoint":"updateTawidTransaction","source":{"storageSource":{"bucket":"gcf-v2-sources-19479591711-asia-southeast2","object":"updateTawidTransaction/function-source.zip","generation":"1786869331169621"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"dockerRepository":"projects/tawid-6f253/locations/asia-southeast2/repositories/gcf-artifacts","sourceProvenance":{"resolvedStorageSource":{"bucket":"gcf-v2-sources-19479591711-asia-southeast2","object":"updateTawidTransaction/function-source.zip","generation":"1786869331169621"}},"dockerRegistry":"ARTIFACT_REGISTRY","serviceAccount":"projects/tawid-6f253/serviceAccounts/19479591711-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/tawid-6f253/locations/asia-southeast2/services/updatetawidtransaction","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"tawid-6f253\",\"storageBucket\":\"tawid-6f253.firebasestorage.app\"}","GCLOUD_PROJECT":"tawid-6f253","EVENTARC_CLOUD_EVENT_SOURCE":"projects/tawid-6f253/locations/asia-southeast2/services/updateTawidTransaction","FUNCTION_TARGET":"updateTawidTransaction","LOG_EXECUTION_ID":"true","FUNCTION_SIGNATURE_TYPE":"http"},"maxInstanceCount":20,"ingressSettings":"ALLOW_ALL","uri":"https://updatetawidtransaction-idudgavlpa-et.a.run.app","serviceAccountEmail":"19479591711-compute@developer.gserviceaccount.com","availableMemory":"256Mi","allTrafficOnLatestRevision":true,"revision":"updatetawidtransaction-00003-yuq","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"state":"ACTIVE","updateTime":"2026-08-16T08:35:39.669648622Z","labels":{"firebase-functions-hash":"6ddbeef8afad2be70d55e2c7de63c60d0ce69783","deployment-tool":"cli-firebase","deployment-callable":"true"},"environment":"GEN_2","url":"https://asia-southeast2-tawid-6f253.cloudfunctions.net/updateTawidTransaction","satisfiesPzs":true,"createTime":"2026-08-16T06:23:26.140624908Z","satisfiesPzi":true},{"name":"projects/tawid-6f253/locations/us-central1/functions/getPaymongoKey","buildConfig":{"build":"projects/19479591711/locations/us-central1/builds/34f1489c-c0ce-493a-bc2b-42e11a91463d","runtime":"nodejs24","entryPoint":"getPaymongoKey","source":{"storageSource":{"bucket":"gcf-v2-sources-19479591711-us-central1","object":"getPaymongoKey/function-source.zip","generation":"1786677237836107"}},"environmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""},"dockerRepository":"projects/tawid-6f253/locations/us-central1/repositories/gcf-artifacts","sourceProvenance":{"resolvedStorageSource":{"bucket":"gcf-v2-sources-19479591711-us-central1","object":"getPaymongoKey/function-source.zip","generation":"1786677237836107"}},"dockerRegistry":"ARTIFACT_REGISTRY","serviceAccount":"projects/tawid-6f253/serviceAccounts/19479591711-compute@developer.gserviceaccount.com","automaticUpdatePolicy":{}},"serviceConfig":{"service":"projects/tawid-6f253/locations/us-central1/services/getpaymongokey","timeoutSeconds":60,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"tawid-6f253\",\"storageBucket\":\"tawid-6f253.firebasestorage.app\"}","GCLOUD_PROJECT":"tawid-6f253","EVENTARC_CLOUD_EVENT_SOURCE":"projects/tawid-6f253/locations/us-central1/services/getPaymongoKey","FUNCTION_TARGET":"getPaymongoKey","LOG_EXECUTION_ID":"true"},"maxInstanceCount":20,"ingressSettings":"ALLOW_ALL","uri":"https://getpaymongokey-idudgavlpa-uc.a.run.app","serviceAccountEmail":"19479591711-compute@developer.gserviceaccount.com","availableMemory":"256Mi","allTrafficOnLatestRevision":true,"secretEnvironmentVariables":[{"key":"PAYMONGO_KEY","projectId":"tawid-6f253","secret":"PAYMONGO_KEY","version":"1"}],"revision":"getpaymongokey-00004-vox","maxInstanceRequestConcurrency":80,"availableCpu":"1"},"state":"ACTIVE","updateTime":"2026-08-14T03:14:53.981007839Z","labels":{"firebase-functions-hash":"3bfad349ed2e72c67cb186768b2d23881333ea1e","deployment-tool":"cli-firebase","deployment-callable":"true"},"environment":"GEN_2","url":"https://us-central1-tawid-6f253.cloudfunctions.net/getPaymongoKey","createTime":"2026-05-22T05:21:08.087639368Z","satisfiesPzi":true}]}
+[info] i  extensions: ensuring required API firebaseextensions.googleapis.com is enabled... 
+[debug] [2026-08-17T12:07:42.785Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2026-08-17T12:07:42.785Z] > authorizing via signed-in user (lookaltechnical@gmail.com)
+[debug] [2026-08-17T12:07:42.785Z] [iam] checking project tawid-6f253 for permissions ["firebase.projects.get","firebaseextensions.instances.list"]
+[debug] [2026-08-17T12:07:42.785Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:42.785Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:42.786Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253:testIamPermissions [none]
+[debug] [2026-08-17T12:07:42.786Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253:testIamPermissions  x-goog-user-project=tawid-6f253
+[debug] [2026-08-17T12:07:42.786Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253:testIamPermissions {"permissions":["firebase.projects.get","firebaseextensions.instances.list"]}
+[debug] [2026-08-17T12:07:43.153Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253:testIamPermissions 200
+[debug] [2026-08-17T12:07:43.153Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253:testIamPermissions {"permissions":["firebase.projects.get","firebaseextensions.instances.list"]}
+[debug] [2026-08-17T12:07:43.154Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:43.154Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:43.154Z] >>> [apiv2][query] GET https://firebaseextensions.googleapis.com/v1beta/projects/tawid-6f253/instances pageSize=100&pageToken=
+[debug] [2026-08-17T12:07:44.511Z] <<< [apiv2][status] GET https://firebaseextensions.googleapis.com/v1beta/projects/tawid-6f253/instances 200
+[debug] [2026-08-17T12:07:44.511Z] <<< [apiv2][body] GET https://firebaseextensions.googleapis.com/v1beta/projects/tawid-6f253/instances {}
+[info] i  functions: preparing functions directory for uploading... 
+[info] i  functions: packaged /Users/lookaldev/Desktop/Tawid/functions (151.8 KB) for uploading 
+[info] i  functions: packaged /Users/lookaldev/Desktop/Tawid/functions (151.8 KB) for uploading 
+[info] i  functions: ensuring required API cloudscheduler.googleapis.com is enabled... 
+[info] i  functions: ensuring required API run.googleapis.com is enabled... 
+[info] i  functions: ensuring required API eventarc.googleapis.com is enabled... 
+[info] i  functions: ensuring required API pubsub.googleapis.com is enabled... 
+[info] i  functions: ensuring required API storage.googleapis.com is enabled... 
+[info] i  functions: generating the service identity for pubsub.googleapis.com... 
+[debug] [2026-08-17T12:07:44.607Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:44.607Z] Checked if tokens are valid: true, expires at: 1786972047910
+[info] i  functions: generating the service identity for eventarc.googleapis.com... 
+[debug] [2026-08-17T12:07:44.607Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:44.607Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:44.607Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1beta1/projects/19479591711/services/pubsub.googleapis.com:generateServiceIdentity [none]
+[debug] [2026-08-17T12:07:44.607Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1beta1/projects/19479591711/services/pubsub.googleapis.com:generateServiceIdentity  x-goog-user-project=19479591711
+[debug] [2026-08-17T12:07:44.607Z] >>> [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/19479591711/services/pubsub.googleapis.com:generateServiceIdentity {}
+[debug] [2026-08-17T12:07:44.608Z] >>> [apiv2][query] POST https://serviceusage.googleapis.com/v1beta1/projects/19479591711/services/eventarc.googleapis.com:generateServiceIdentity [none]
+[debug] [2026-08-17T12:07:44.608Z] >>> [apiv2][(partial)header] POST https://serviceusage.googleapis.com/v1beta1/projects/19479591711/services/eventarc.googleapis.com:generateServiceIdentity  x-goog-user-project=19479591711
+[debug] [2026-08-17T12:07:44.608Z] >>> [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/19479591711/services/eventarc.googleapis.com:generateServiceIdentity {}
+[debug] [2026-08-17T12:07:46.267Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1beta1/projects/19479591711/services/pubsub.googleapis.com:generateServiceIdentity 200
+[debug] [2026-08-17T12:07:46.267Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/19479591711/services/pubsub.googleapis.com:generateServiceIdentity {"name":"operations/finished.DONE_OPERATION","done":true,"response":{"@type":"type.googleapis.com/google.api.serviceusage.v1beta1.ServiceIdentity","email":"service-19479591711@gcp-sa-pubsub.iam.gserviceaccount.com","uniqueId":"107341670450948723944"}}
+[debug] [2026-08-17T12:07:46.330Z] <<< [apiv2][status] POST https://serviceusage.googleapis.com/v1beta1/projects/19479591711/services/eventarc.googleapis.com:generateServiceIdentity 200
+[debug] [2026-08-17T12:07:46.330Z] <<< [apiv2][body] POST https://serviceusage.googleapis.com/v1beta1/projects/19479591711/services/eventarc.googleapis.com:generateServiceIdentity {"name":"operations/finished.DONE_OPERATION","done":true,"response":{"@type":"type.googleapis.com/google.api.serviceusage.v1beta1.ServiceIdentity","email":"service-19479591711@gcp-sa-eventarc.iam.gserviceaccount.com","uniqueId":"100708414209019191573"}}
+[info] i  functions: ensuring required API secretmanager.googleapis.com is enabled... 
+[debug] [2026-08-17T12:07:46.336Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:46.336Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:46.336Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253 [none]
+[debug] [2026-08-17T12:07:46.773Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253 200
+[debug] [2026-08-17T12:07:46.773Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/tawid-6f253 {"projectNumber":"19479591711","projectId":"tawid-6f253","lifecycleState":"ACTIVE","name":"Tawid","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2026-03-08T14:15:02.734817Z"}
+[debug] [2026-08-17T12:07:46.774Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:46.774Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:46.774Z] >>> [apiv2][query] GET https://cloudbilling.googleapis.com/v1/projects/tawid-6f253/billingInfo [none]
+[debug] [2026-08-17T12:07:46.774Z] >>> [apiv2][(partial)header] GET https://cloudbilling.googleapis.com/v1/projects/tawid-6f253/billingInfo  x-goog-user-project=tawid-6f253
+[debug] [2026-08-17T12:07:47.273Z] <<< [apiv2][status] GET https://cloudbilling.googleapis.com/v1/projects/tawid-6f253/billingInfo 200
+[debug] [2026-08-17T12:07:47.273Z] <<< [apiv2][body] GET https://cloudbilling.googleapis.com/v1/projects/tawid-6f253/billingInfo {"name":"projects/tawid-6f253/billingInfo","projectId":"tawid-6f253","billingAccountName":"billingAccounts/01C313-83F47B-2BDC7C","billingEnabled":true}
+[debug] [2026-08-17T12:07:47.275Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:47.276Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:47.276Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:47.276Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:07:47.276Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v1/projects/tawid-6f253/locations/asia-southeast2/functions:generateUploadUrl [none]
+[debug] [2026-08-17T12:07:47.277Z] >>> [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/tawid-6f253/locations/asia-southeast2/functions:generateUploadUrl {}
+[debug] [2026-08-17T12:07:47.277Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v2/projects/tawid-6f253/locations/us-central1/functions:generateUploadUrl [none]
+[debug] [2026-08-17T12:07:48.822Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v2/projects/tawid-6f253/locations/us-central1/functions:generateUploadUrl 200
+[debug] [2026-08-17T12:07:48.822Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v2/projects/tawid-6f253/locations/us-central1/functions:generateUploadUrl {"uploadUrl":"https://storage.googleapis.com/gcf-v2-uploads-19479591711.us-central1.cloudfunctions.appspot.com/337d308e-5ccf-4102-b741-82eb8f86fac9.zip?GoogleAccessId=service-19479591711@gcf-admin-robot.iam.gserviceaccount.com&Expires=1786970268&Signature=tGwQA6fwc1Zhq5VHiYuBEsmpUbXieoQOshgfuQEsZg%2BSIj5MC8lEI0ysWqfOBCE1p8RgUTPMbqPRdvvlUHtf6H43oWnaXiiy9HWWr9NGTXkXqkHu6Jgbwg7G6ESy71Hyv%2BmwYYqJMDbbOCJkBBJpsoTmCzmi2biCFR92R%2Be465%2FL8b%2BLsN9P0LbqS5yE8wx2vjzGHBXLapVCng5DeRJh%2FCgDAANlGAFZ2VjyqGg26cRg6aDq2rVC%2B34b22O3H1zrDSUa6Z%2BD1Ot7ZpK3e7VyKNFlm5KZ%2Fb6L3kXFjJ7zWR5ZQ5JdWazeOvZ52JV9E3C7wAMBD6KvXeGSRxXyDpUXVQ%3D%3D","storageSource":{"bucket":"gcf-v2-uploads-19479591711.us-central1.cloudfunctions.appspot.com","object":"337d308e-5ccf-4102-b741-82eb8f86fac9.zip"}}
+[debug] [2026-08-17T12:07:48.823Z] >>> [apiv2][query] PUT https://storage.googleapis.com/gcf-v2-uploads-19479591711.us-central1.cloudfunctions.appspot.com/337d308e-5ccf-4102-b741-82eb8f86fac9.zip GoogleAccessId=service-19479591711%40gcf-admin-robot.iam.gserviceaccount.com&Expires=1786970268&Signature=tGwQA6fwc1Zhq5VHiYuBEsmpUbXieoQOshgfuQEsZg%2BSIj5MC8lEI0ysWqfOBCE1p8RgUTPMbqPRdvvlUHtf6H43oWnaXiiy9HWWr9NGTXkXqkHu6Jgbwg7G6ESy71Hyv%2BmwYYqJMDbbOCJkBBJpsoTmCzmi2biCFR92R%2Be465%2FL8b%2BLsN9P0LbqS5yE8wx2vjzGHBXLapVCng5DeRJh%2FCgDAANlGAFZ2VjyqGg26cRg6aDq2rVC%2B34b22O3H1zrDSUa6Z%2BD1Ot7ZpK3e7VyKNFlm5KZ%2Fb6L3kXFjJ7zWR5ZQ5JdWazeOvZ52JV9E3C7wAMBD6KvXeGSRxXyDpUXVQ%3D%3D
+[debug] [2026-08-17T12:07:48.823Z] >>> [apiv2][body] PUT https://storage.googleapis.com/gcf-v2-uploads-19479591711.us-central1.cloudfunctions.appspot.com/337d308e-5ccf-4102-b741-82eb8f86fac9.zip [stream]
+[debug] [2026-08-17T12:07:49.905Z] <<< [apiv2][status] PUT https://storage.googleapis.com/gcf-v2-uploads-19479591711.us-central1.cloudfunctions.appspot.com/337d308e-5ccf-4102-b741-82eb8f86fac9.zip 200
+[debug] [2026-08-17T12:07:49.906Z] <<< [apiv2][body] PUT https://storage.googleapis.com/gcf-v2-uploads-19479591711.us-central1.cloudfunctions.appspot.com/337d308e-5ccf-4102-b741-82eb8f86fac9.zip [omitted]
+[debug] [2026-08-17T12:08:15.167Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v1/projects/tawid-6f253/locations/asia-southeast2/functions:generateUploadUrl 200
+[debug] [2026-08-17T12:08:15.168Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/tawid-6f253/locations/asia-southeast2/functions:generateUploadUrl {"uploadUrl":"https://storage.googleapis.com/uploads-785087544688.asia-southeast2.cloudfunctions.appspot.com/6e3202be-d144-44c9-940f-9c24a47ba815.zip?GoogleAccessId=service-19479591711@gcf-admin-robot.iam.gserviceaccount.com&Expires=1786970295&Signature=BiU0D%2BG13%2Fz8861xNK5U5jElOF03ZvRg16Nz0mUwezfcK%2FbnqmvsAAgjcB57V71ZBcaqOrs9101B1goHsiN8rK%2FkwfcGWsoShpuAqYy%2FGVo9FOD5XVtfYtt1XnhcbLp2yEi%2B%2FctRxmfrxMI5emfSZitBZTFhcsvRJ8M%2FXmLR2OLAgx7ZjrnU0EsIzzzQxHfDk4H4ZKMG76InN851b1H2n79cyfr%2BYWxTXDZW4vnYsSdi7esXAQaGtDrLWvRdchPYMDoIriEKoEDVgkdZ%2BOaSb9vqLqgBij3Yb1XptBCnZMcPevJLyiUzHDC2LtX0TNYu3Xqr6mGETgNdyUrnYK9uHg%3D%3D"}
+[debug] [2026-08-17T12:08:15.169Z] >>> [apiv2][query] PUT https://storage.googleapis.com/uploads-785087544688.asia-southeast2.cloudfunctions.appspot.com/6e3202be-d144-44c9-940f-9c24a47ba815.zip GoogleAccessId=service-19479591711%40gcf-admin-robot.iam.gserviceaccount.com&Expires=1786970295&Signature=BiU0D%2BG13%2Fz8861xNK5U5jElOF03ZvRg16Nz0mUwezfcK%2FbnqmvsAAgjcB57V71ZBcaqOrs9101B1goHsiN8rK%2FkwfcGWsoShpuAqYy%2FGVo9FOD5XVtfYtt1XnhcbLp2yEi%2B%2FctRxmfrxMI5emfSZitBZTFhcsvRJ8M%2FXmLR2OLAgx7ZjrnU0EsIzzzQxHfDk4H4ZKMG76InN851b1H2n79cyfr%2BYWxTXDZW4vnYsSdi7esXAQaGtDrLWvRdchPYMDoIriEKoEDVgkdZ%2BOaSb9vqLqgBij3Yb1XptBCnZMcPevJLyiUzHDC2LtX0TNYu3Xqr6mGETgNdyUrnYK9uHg%3D%3D
+[debug] [2026-08-17T12:08:15.169Z] >>> [apiv2][body] PUT https://storage.googleapis.com/uploads-785087544688.asia-southeast2.cloudfunctions.appspot.com/6e3202be-d144-44c9-940f-9c24a47ba815.zip [stream]
+[debug] [2026-08-17T12:08:16.353Z] <<< [apiv2][status] PUT https://storage.googleapis.com/uploads-785087544688.asia-southeast2.cloudfunctions.appspot.com/6e3202be-d144-44c9-940f-9c24a47ba815.zip 200
+[debug] [2026-08-17T12:08:16.353Z] <<< [apiv2][body] PUT https://storage.googleapis.com/uploads-785087544688.asia-southeast2.cloudfunctions.appspot.com/6e3202be-d144-44c9-940f-9c24a47ba815.zip [omitted]
+[info] ✔  functions: functions source uploaded successfully 
+[info] i  functions: creating Node.js 24 (1st Gen) function tawidCreateUser(asia-southeast2)... 
+[debug] [2026-08-17T12:08:16.360Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:08:16.360Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:08:16.360Z] >>> [apiv2][query] POST https://cloudfunctions.googleapis.com/v1/projects/tawid-6f253/locations/asia-southeast2/functions [none]
+[debug] [2026-08-17T12:08:16.360Z] >>> [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/tawid-6f253/locations/asia-southeast2/functions {"name":"projects/tawid-6f253/locations/asia-southeast2/functions/tawidCreateUser","sourceUploadUrl":"https://storage.googleapis.com/uploads-785087544688.asia-southeast2.cloudfunctions.appspot.com/6e3202be-d144-44c9-940f-9c24a47ba815.zip?GoogleAccessId=service-19479591711@gcf-admin-robot.iam.gserviceaccount.com&Expires=1786970295&Signature=BiU0D%2BG13%2Fz8861xNK5U5jElOF03ZvRg16Nz0mUwezfcK%2FbnqmvsAAgjcB57V71ZBcaqOrs9101B1goHsiN8rK%2FkwfcGWsoShpuAqYy%2FGVo9FOD5XVtfYtt1XnhcbLp2yEi%2B%2FctRxmfrxMI5emfSZitBZTFhcsvRJ8M%2FXmLR2OLAgx7ZjrnU0EsIzzzQxHfDk4H4ZKMG76InN851b1H2n79cyfr%2BYWxTXDZW4vnYsSdi7esXAQaGtDrLWvRdchPYMDoIriEKoEDVgkdZ%2BOaSb9vqLqgBij3Yb1XptBCnZMcPevJLyiUzHDC2LtX0TNYu3Xqr6mGETgNdyUrnYK9uHg%3D%3D","entryPoint":"tawidCreateUser","runtime":"nodejs24","dockerRegistry":"ARTIFACT_REGISTRY","labels":{"deployment-tool":"cli-firebase","firebase-functions-hash":"7620a508f7649fc91a95bc71d21ed0e2532b0aca"},"eventTrigger":{"eventType":"providers/firebase.auth/eventTypes/user.create","resource":"projects/tawid-6f253"},"minInstances":null,"maxInstances":null,"ingressSettings":null,"environmentVariables":{"FIREBASE_CONFIG":"{\"projectId\":\"tawid-6f253\",\"storageBucket\":\"tawid-6f253.firebasestorage.app\"}","GCLOUD_PROJECT":"tawid-6f253","EVENTARC_CLOUD_EVENT_SOURCE":"projects/tawid-6f253/locations/asia-southeast2/functions/tawidCreateUser"},"serviceAccountEmail":null,"availableMemoryMb":null,"timeout":null,"vpcConnector":null,"vpcConnectorEgressSettings":null,"buildEnvironmentVariables":{"GOOGLE_NODE_RUN_SCRIPTS":""}}
+[debug] [2026-08-17T12:08:17.087Z] <<< [apiv2][status] POST https://cloudfunctions.googleapis.com/v1/projects/tawid-6f253/locations/asia-southeast2/functions 400
+[debug] [2026-08-17T12:08:17.088Z] <<< [apiv2][body] POST https://cloudfunctions.googleapis.com/v1/projects/tawid-6f253/locations/asia-southeast2/functions {"error":{"code":400,"message":"Failed to create 1st Gen function projects/tawid-6f253/locations/asia-southeast2/functions/tawidCreateUser: runtime: Runtime validation errors: [error_code: \t INVALID_RUNTIME\nmessage: \"Runtime \\\"nodejs24\\\" is not supported on GCF Gen1\"\n]","status":"INVALID_ARGUMENT"}}
+[warn] ⚠  functions: Runtime "nodejs24" is not supported on GCF Gen1 for function projects/tawid-6f253/locations/asia-southeast2/functions/tawidCreateUser 
+[warn] ⚠  functions: failed to create function projects/tawid-6f253/locations/asia-southeast2/functions/tawidCreateUser 
+[error] Failed to create function projects/tawid-6f253/locations/asia-southeast2/functions/tawidCreateUser
+[warn] ⚠  functions: Deploys failed. Skipping deletes. 
+[debug] [2026-08-17T12:08:17.095Z] Total Function Deployment time: 732
+[debug] [2026-08-17T12:08:17.095Z] 1 Functions Deployed
+[debug] [2026-08-17T12:08:17.095Z] 1 Functions Errored
+[debug] [2026-08-17T12:08:17.095Z] 0 Function Deployments Aborted
+[debug] [2026-08-17T12:08:17.095Z] Average Function Deployment time: 731
+[info] 
+[info] Functions deploy had errors with the following functions:
+	tawidCreateUser(asia-southeast2)
+[debug] [2026-08-17T12:08:17.542Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:08:17.542Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:08:17.542Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:08:17.542Z] Checked if tokens are valid: true, expires at: 1786972047910
+[debug] [2026-08-17T12:08:17.542Z] >>> [apiv2][query] GET https://artifactregistry.googleapis.com/v1/projects/tawid-6f253/locations/us-central1/repositories/gcf-artifacts [none]
+[debug] [2026-08-17T12:08:17.543Z] >>> [apiv2][query] GET https://artifactregistry.googleapis.com/v1/projects/tawid-6f253/locations/asia-southeast2/repositories/gcf-artifacts [none]
+[debug] [2026-08-17T12:08:18.513Z] <<< [apiv2][status] GET https://artifactregistry.googleapis.com/v1/projects/tawid-6f253/locations/asia-southeast2/repositories/gcf-artifacts 200
+[debug] [2026-08-17T12:08:18.513Z] <<< [apiv2][body] GET https://artifactregistry.googleapis.com/v1/projects/tawid-6f253/locations/asia-southeast2/repositories/gcf-artifacts {"name":"projects/tawid-6f253/locations/asia-southeast2/repositories/gcf-artifacts","format":"DOCKER","description":"This repository is created and used by Cloud Functions for storing function docker images.","labels":{"goog-managed-by":"cloudfunctions"},"createTime":"2026-07-15T21:38:54.964462Z","updateTime":"2026-08-17T07:55:02.069029Z","mode":"STANDARD_REPOSITORY","cleanupPolicies":{"firebase-functions-cleanup":{"id":"firebase-functions-cleanup","action":"DELETE","condition":{"tagState":"ANY","olderThan":"86400s"}}},"sizeBytes":"136650251","satisfiesPzs":true,"vulnerabilityScanningConfig":{"lastEnableTime":"2026-07-15T21:38:42.323371243Z","enablementState":"SCANNING_DISABLED","enablementStateReason":"API containerscanning.googleapis.com is not enabled."},"satisfiesPzi":true,"registryUri":"asia-southeast2-docker.pkg.dev/tawid-6f253/gcf-artifacts"}
+[debug] [2026-08-17T12:08:19.030Z] <<< [apiv2][status] GET https://artifactregistry.googleapis.com/v1/projects/tawid-6f253/locations/us-central1/repositories/gcf-artifacts 200
+[debug] [2026-08-17T12:08:19.031Z] <<< [apiv2][body] GET https://artifactregistry.googleapis.com/v1/projects/tawid-6f253/locations/us-central1/repositories/gcf-artifacts {"name":"projects/tawid-6f253/locations/us-central1/repositories/gcf-artifacts","format":"DOCKER","description":"This repository is created and used by Cloud Functions for storing function docker images.","labels":{"goog-managed-by":"cloudfunctions"},"createTime":"2026-05-22T05:12:47.073092Z","updateTime":"2026-08-14T03:14:38.188089Z","mode":"STANDARD_REPOSITORY","cleanupPolicies":{"firebase-functions-cleanup":{"id":"firebase-functions-cleanup","action":"DELETE","condition":{"tagState":"ANY","olderThan":"2592000s"}}},"sizeBytes":"135351563","vulnerabilityScanningConfig":{"lastEnableTime":"2026-05-22T05:12:38.030931839Z","enablementState":"SCANNING_DISABLED","enablementStateReason":"API containerscanning.googleapis.com is not enabled."},"satisfiesPzi":true,"registryUri":"us-central1-docker.pkg.dev/tawid-6f253/gcf-artifacts"}
+[debug] [2026-08-17T12:08:19.032Z] Functions deploy failed.
+[debug] [2026-08-17T12:08:19.032Z] {
+  "endpoint": {
+    "id": "tawidCreateUser",
+    "project": "tawid-6f253",
+    "region": "asia-southeast2",
+    "entryPoint": "tawidCreateUser",
+    "platform": "gcfv1",
+    "runtime": "nodejs24",
+    "eventTrigger": {
+      "eventType": "providers/firebase.auth/eventTypes/user.create",
+      "retry": false,
+      "eventFilters": {
+        "resource": "projects/tawid-6f253"
+      }
+    },
+    "labels": {
+      "deployment-tool": "cli-firebase"
+    },
+    "serviceAccount": null,
+    "ingressSettings": null,
+    "availableMemoryMb": null,
+    "timeoutSeconds": null,
+    "maxInstances": null,
+    "minInstances": null,
+    "vpc": null,
+    "environmentVariables": {
+      "FIREBASE_CONFIG": "{\"projectId\":\"tawid-6f253\",\"storageBucket\":\"tawid-6f253.firebasestorage.app\"}",
+      "GCLOUD_PROJECT": "tawid-6f253",
+      "EVENTARC_CLOUD_EVENT_SOURCE": "projects/tawid-6f253/locations/asia-southeast2/functions/tawidCreateUser"
+    },
+    "codebase": "default",
+    "targetedByOnly": true,
+    "hash": "7620a508f7649fc91a95bc71d21ed0e2532b0aca"
+  },
+  "op": "create",
+  "original": {
+    "name": "FirebaseError",
+    "children": [],
+    "context": {
+      "function": "projects/tawid-6f253/locations/asia-southeast2/functions/tawidCreateUser"
+    },
+    "exit": 1,
+    "message": "Failed to create function projects/tawid-6f253/locations/asia-southeast2/functions/tawidCreateUser",
+    "original": {
+      "name": "FirebaseError",
+      "children": [],
+      "context": {
+        "body": {
+          "error": {
+            "code": 400,
+            "message": "Failed to create 1st Gen function projects/tawid-6f253/locations/asia-southeast2/functions/tawidCreateUser: runtime: Runtime validation errors: [error_code: \t INVALID_RUNTIME\nmessage: \"Runtime \\\"nodejs24\\\" is not supported on GCF Gen1\"\n]",
+            "status": "INVALID_ARGUMENT"
+          }
+        },
+        "response": {
+          "statusCode": 400
+        }
+      },
+      "exit": 1,
+      "message": "Request to https://cloudfunctions.googleapis.com/v1/projects/tawid-6f253/locations/asia-southeast2/functions had HTTP Error: 400, Failed to create 1st Gen function projects/tawid-6f253/locations/asia-southeast2/functions/tawidCreateUser: runtime: Runtime validation errors: [error_code: \t INVALID_RUNTIME\nmessage: \"Runtime \\\"nodejs24\\\" is not supported on GCF Gen1\"\n]",
+      "status": 400
+    },
+    "status": 400,
+    "code": 400
+  }
+}
+[debug] [2026-08-17T12:08:19.114Z] Error: Failed to create function tawidCreateUser in region asia-southeast2
+    at /opt/homebrew/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:56:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async Fabricator.createV1Function (/opt/homebrew/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:282:32)
+    at async Fabricator.createEndpoint (/opt/homebrew/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:225:13)
+    at async Fabricator.wrapOperation (/opt/homebrew/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:213:13)
+    at async Promise.all (index 0)
+    at async Promise.allSettled (index 0)
+    at async Fabricator.applyPlan (/opt/homebrew/lib/node_modules/firebase-tools/lib/deploy/functions/release/fabricator.js:149:45)
+    at async release (/opt/homebrew/lib/node_modules/firebase-tools/lib/deploy/functions/release/index.js:89:21)
+    at async chain (/opt/homebrew/lib/node_modules/firebase-tools/lib/deploy/index.js:105:9)
+[error] 
+[error] Error: There was an error deploying functions

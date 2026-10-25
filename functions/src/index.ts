@@ -2,7 +2,8 @@ import * as admin from "firebase-admin";
 
 admin.initializeApp();
 
-export {getPaymongoKey} from "./services/getPaymongoKey";
-export {tawidNotification} from "./services/tawidNotification";
-export {tawidNotifyAll} from "./services/tawidNotifyAll";
-export {createTawidTransaction, updateTawidTransaction} from "./services/tawidTransactions";
+export {getPaymongoKey} from "./cloudFunctions/getPaymongoKey";
+export {tawidNotification} from "./cloudFunctions/tawidNotification";
+export {tawidNotifyAll} from "./cloudFunctions/tawidNotifyAll";
+export {createTawidTransaction, updateTawidTransaction} from "./cloudFunctions/tawidTransactions";
+export {tawidCreateUser} from "./cloudFunctions/tawidCreateUser";

@@ -87,7 +87,7 @@ export function useLoginLogic() {
   // Morph main CTA button width
   useEffect(() => {
     Animated.spring(buttonWidth, {
-      toValue: isFinalSlide ? 220 : 56,
+      toValue: isFinalSlide ? 190 : 50,
       useNativeDriver: false,
       friction: 6,
       tension: 110,

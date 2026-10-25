@@ -23,7 +23,7 @@ export function TawidBadge({ count, max = 9, badgeStyle, textStyle }: TawidBadge
           borderRadius: 9,
           minWidth: 18,
           height: 18,
-          paddingHorizontal: 4,
+          //paddingHorizontal: 4,
           alignItems: 'center',
           justifyContent: 'center',
           borderWidth: 1.5,

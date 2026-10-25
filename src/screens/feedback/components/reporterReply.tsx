@@ -36,10 +36,11 @@ import {
   showLoginRequiredAlert,
   showFeedbackErrorAlert,
 } from './reporterReplyFunc';
+import { useTabBarSpace } from '../../../tabStyle';
 
 export default function ReporterReply({ userData }: { userData: UserData | null }) {
   // State — submit form
-  const [category, setCategory] = React.useState<Category>('Suggestion');
+  const [category, setCategory] = React.useState<Category>('Positive');
   const [message, setMessage] = React.useState('');
   const [submitting, setSubmitting] = React.useState(false);
   const [history, setHistory] = React.useState<FeedbackItem[]>([]);
@@ -47,7 +48,7 @@ export default function ReporterReply({ userData }: { userData: UserData | null 
 
   // State — edit existing feedback
   const [editingId, setEditingId] = React.useState<string | null>(null);
-  const [editCategory, setEditCategory] = React.useState<Category>('Suggestion');
+  const [editCategory, setEditCategory] = React.useState<Category>('Positive');
   const [editMessage, setEditMessage] = React.useState('');
   const [editSaving, setEditSaving] = React.useState(false);
 
@@ -91,7 +92,7 @@ export default function ReporterReply({ userData }: { userData: UserData | null 
     try {
       await submitFeedback(category, message, userData);
       setMessage('');
-      setCategory('Suggestion');
+      setCategory('Positive');
     } catch (error) {
       showFeedbackErrorAlert(error);
     } finally {
@@ -222,11 +223,13 @@ export default function ReporterReply({ userData }: { userData: UserData | null 
 
   // ========== Main Render ==========
 
+  const bottomSpace = useTabBarSpace();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#FAFAFA' }} edges={['top', 'left', 'right']}>
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ padding: 15, paddingBottom: 40 }}
+        contentContainerStyle={{ padding: 15, paddingBottom: bottomSpace }}
         keyboardShouldPersistTaps="handled"
       >
         <Header

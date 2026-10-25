@@ -1,30 +1,23 @@
-// ============================================================
 // screens/dashboard/dashboard.tsx
-// ============================================================
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StatusBar } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../../../constants/colors';
 import Tab from '../../../components/tawidTab';
-import FloatingButton from './components/floatingButton';
 import RoutesScreen from './components/routes';
 import PortsScreen from './components/ports';
 import VesselsScreen from './components/vessels';
 import UsersScreen from './components/users';
-import TawidHeader from '../../../components/tawidHeader';
+import TawidHeader from '../../../header/tawidHeader';
+import DashboardSkeleton from './dashboardSkeleton';
+import { subscribeToRoutes } from './dashboardFunctions';
 
-interface DashboardHomeScreenPro {
-  userData?: {
-    name?: string;
-    email?: string;
-    photo?: string;
-    role?: string;
-    createdAt?: any;
-    lastLoginAt?: any;
-  };
+interface DashboardHomeScreenProps {
+  userData: any; // Replace with your actual user type
 }
 
-export default function DashboardHome({ userData }: DashboardHomeScreenPro) {
+export default function DashboardHome({ userData }: DashboardHomeScreenProps) {
+  const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<'routes' | 'ports' | 'vessels' | 'users'>('routes');
 
   const tabs = [
@@ -33,6 +26,20 @@ export default function DashboardHome({ userData }: DashboardHomeScreenPro) {
     { key: 'vessels', label: 'Vessels', component: <VesselsScreen /> },
     { key: 'users', label: 'Users', component: <UsersScreen /> },
   ];
+
+  useEffect(() => {
+    const unsubRoutes = subscribeToRoutes(() => {
+      setLoading(false);
+    });
+
+    return () => {
+      unsubRoutes();
+    };
+  }, []);
+
+  if (loading) {
+    return <DashboardSkeleton />;
+  }
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.white }}>
@@ -44,7 +51,6 @@ export default function DashboardHome({ userData }: DashboardHomeScreenPro) {
           activeTab={tab}
           onTabChange={(key) => setTab(key as 'routes' | 'ports' | 'vessels' | 'users')}
         />
-        <FloatingButton />
       </SafeAreaView>
     </View>
   );

@@ -9,6 +9,7 @@ import { auth, firestore } from '../../firebase/firebaseConfig';
 import { doc, updateDoc } from 'firebase/firestore';
 import { googleLogout } from '../../auth/loginAuth';
 import ProfileContent from './profileContent';
+import { useTabBarSpace } from '../../tabStyle';
 
 interface ProfileProps {
   userData?: any;
@@ -96,10 +97,12 @@ const Profile: React.FC<ProfileProps> = ({ userData, onRoleSwitch }) => {
     });
   }, []);
 
+  const bottomSpace = useTabBarSpace();
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
       <ScrollView
-        contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: bottomSpace }}
         showsVerticalScrollIndicator={false}
       >
         <ProfileContent

@@ -3,7 +3,6 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
   View,
   StatusBar,
-  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SelectPort from './home/selectPort';
@@ -20,7 +19,8 @@ import {
   Trip
 } from '../dashboard/dashboardFunctions';
 import SeaAdvisory from './home/seaAdvisory';
-import TawidHeader from '../../../components/tawidHeader';
+import TawidHeader from '../../../header/tawidHeader';
+import PaxSkeleton from './paxSkeleton';
 
 interface PaxHomeProps {
   userData?: any;
@@ -36,7 +36,6 @@ export default function PaxHome({ userData }: PaxHomeProps) {
   const [selectedDestination, setSelectedDestination] = useState<string | null>(null);
   const autoSelectDoneRef = useRef(false);
   const preferredCity = userData?.nearestPort?.city ?? null;
-  const userPhoto = userData?.photo ?? null;
 
   useEffect(() => {
     const unsubPorts = subscribeToPorts(setPorts);
@@ -119,32 +118,34 @@ export default function PaxHome({ userData }: PaxHomeProps) {
   useEffect(() => {
     if (autoSelectDoneRef.current) return;
     if (ports.length === 0 || routes.length === 0) return;
+
     let originPort: Port | undefined;
     let matchedRoute: Route | undefined;
+
     if (preferredCity) {
       originPort = ports.find((p) => p.name === preferredCity);
       if (originPort) {
         matchedRoute = routes.find((r) => r.originPortId === originPort!.id);
       }
     }
+
     if (!matchedRoute) {
       matchedRoute = routes[0];
       originPort = ports.find((p) => p.id === matchedRoute!.originPortId);
     }
+
     if (!originPort || !matchedRoute) return;
+
     const destPort = ports.find((p) => p.id === matchedRoute!.destinationPortId);
     if (!destPort) return;
+
     setSelectedOrigin(originPort.name);
     setSelectedDestination(destPort.name);
     autoSelectDoneRef.current = true;
   }, [ports, routes, preferredCity]);
 
   if (loading) {
-    return (
-      <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.white }}>
-        <ActivityIndicator size="large" color={colors.brand} />
-      </SafeAreaView>
-    );
+    return <PaxSkeleton />;
   }
 
   return (

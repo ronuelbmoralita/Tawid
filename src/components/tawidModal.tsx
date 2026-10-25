@@ -10,6 +10,7 @@ import {
   ViewStyle,
   TextStyle,
   DimensionValue,
+  useWindowDimensions,
 } from 'react-native';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { colors } from '../constants/colors';
@@ -31,6 +32,18 @@ interface TawidModalProps {
   actions?: ModalAction[];
   /** Optional fixed height (e.g. 300, '50%', '400') */
   height?: DimensionValue;
+  /**
+   * Modal position.
+   * - 'center' (default): centered with side margins
+   * - 'bottom': anchored to the bottom of the screen
+   */
+  position?: 'center' | 'bottom';
+  /**
+   * Horizontal margin as percentage of screen width (0–20).
+   * Only applied when position is 'center'. Default: 4 (≈ 92% width).
+   * Ignored when position is 'bottom' (full width).
+   */
+  horizontalMarginPercent?: number;
   children: React.ReactNode;
 }
 
@@ -40,10 +53,20 @@ const TawidModal: React.FC<TawidModalProps> = ({
   title,
   showCloseButton = true,
   actions = [],
-  height, // <-- kinuha natin ang height prop dito
+  height,
+  position = 'center',
+  horizontalMarginPercent = 4,
   children,
 }) => {
   const showHeader = title || showCloseButton;
+  const { width: screenWidth } = useWindowDimensions();
+
+  const isBottom = position === 'bottom';
+
+  // Clamp margin so width stays reasonable
+  const marginPercent = Math.min(Math.max(horizontalMarginPercent, 0), 20);
+  const horizontalMargin = isBottom ? 0 : (screenWidth * marginPercent) / 100;
+  const modalWidth = isBottom ? '100%' : screenWidth - horizontalMargin * 2;
 
   const getButtonStyle = (action: ModalAction): ViewStyle => {
     const base: ViewStyle = {
@@ -74,7 +97,6 @@ const TawidModal: React.FC<TawidModalProps> = ({
       };
     }
 
-    // default
     return {
       ...base,
       backgroundColor: action.disabled || action.loading ? '#c7c7cc' : colors.brand,
@@ -93,87 +115,89 @@ const TawidModal: React.FC<TawidModalProps> = ({
     return { color: 'white', fontWeight: '600' };
   };
 
-  // Dynamic style para sa modal container
   const modalContainerStyle: ViewStyle = {
     backgroundColor: colors.white,
-    borderRadius: 20,
-    width: '92%',
-    maxWidth: 400,
+    width: modalWidth,
+    maxWidth: isBottom ? undefined : 400,
     elevation: 10,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
+    shadowOffset: { width: 0, height: isBottom ? -4 : 10 },
     shadowOpacity: 0.25,
     shadowRadius: 20,
-    // Kung may ipinasang height, 'yun ang gagamitin bilang fixed height.
-    // Kapag wala, gagamitin ang maxHeight para mag-expand base sa content.
-    ...(height ? { height } : { maxHeight: '85%' }),
+    ...(height ? { height } : { maxHeight: isBottom ? '90%' : '85%' }),
+    overflow: 'hidden',
+    // All corners for center, top only for bottom sheet
+    borderRadius: isBottom ? 0 : 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  };
+
+  const overlayStyle: ViewStyle = {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: isBottom ? 'flex-end' : 'center',
+    alignItems: 'center',
   };
 
   return (
-    <Modal transparent visible={visible} animationType="fade">
+    <Modal transparent visible={visible} animationType={'fade'}>
       <TouchableWithoutFeedback onPress={onClose}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+        <View style={overlayStyle}>
           <TouchableWithoutFeedback>
             <View style={modalContainerStyle}>
-              {/* ginawang contentContainerStyle para ma-stretch ang ScrollView height pag may fixed height */}
+              {/* Sticky header — outside ScrollView */}
+              {showHeader && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: title ? 'space-between' : 'flex-end',
+                    alignItems: 'center',
+                    paddingHorizontal: 20,
+                    paddingTop: 20,
+                    paddingBottom: 12,
+                    borderBottomWidth: 1,
+                    borderBottomColor: '#f0f0f0',
+                  }}
+                >
+                  {title && (
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        fontWeight: '700',
+                        color: colors.black,
+                        letterSpacing: 0.3,
+                      }}
+                    >
+                      {title}
+                    </Text>
+                  )}
+                  {showCloseButton && (
+                    <TouchableOpacity
+                      onPress={onClose}
+                      style={{
+                        padding: 6,
+                        borderRadius: 20,
+                        backgroundColor: '#f5f5f5',
+                        width: 32,
+                        height: 32,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <FontAwesome6 name="xmark" size={18} color="#666" iconStyle="solid" />
+                    </TouchableOpacity>
+                  )}
+                </View>
+              )}
+
+              {/* Scrollable body */}
               <ScrollView
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ flexGrow: 1 }}
+                bounces={!isBottom}
               >
                 <View style={{ padding: 20, flex: 1, justifyContent: 'space-between' }}>
-                  <View>
-                    {showHeader && (
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: title ? 'space-between' : 'flex-end',
-                          alignItems: 'center',
-                          marginBottom: 20,
-                          paddingBottom: 12,
-                          borderBottomWidth: 1,
-                          borderBottomColor: '#f0f0f0',
-                        }}
-                      >
-                        {title && (
-                          <Text
-                            style={{
-                              fontSize: 20,
-                              fontWeight: '700',
-                              color: colors.black,
-                              letterSpacing: 0.3,
-                            }}
-                          >
-                            {title}
-                          </Text>
-                        )}
-                        {showCloseButton && (
-                          <TouchableOpacity
-                            onPress={onClose}
-                            style={{
-                              padding: 6,
-                              borderRadius: 20,
-                              backgroundColor: '#f5f5f5',
-                              width: 32,
-                              height: 32,
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                            }}
-                          >
-                            <FontAwesome6 name="xmark" size={18} color="#666" iconStyle="solid" />
-                          </TouchableOpacity>
-                        )}
-                      </View>
-                    )}
-
-                    {children}
-                  </View>
+                  <View>{children}</View>
 
                   {actions.length > 0 && (
                     <View

@@ -225,7 +225,7 @@ export default function SeaAdvisory({
           <View style={{ alignItems: 'flex-end' }}>
             <Text style={{ fontSize: 20, fontWeight: '600', color: '#1f2937' }}>{fmtTime(updated)}</Text>
             <Text style={{ fontSize: 10, color: '#6b7280', marginTop: 1 }}>{fmtDate(updated)}</Text>
-            {autoFetch && !isPreview && (
+
               <Animated.View style={{ transform: [{ scale: refreshScale }], marginTop: 6 }}>
                 <TouchableOpacity
                   onPress={refresh}
@@ -249,7 +249,6 @@ export default function SeaAdvisory({
                   </Text>
                 </TouchableOpacity>
               </Animated.View>
-            )}
           </View>
         </View>
       </TouchableOpacity>

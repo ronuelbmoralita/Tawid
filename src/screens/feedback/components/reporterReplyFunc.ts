@@ -25,7 +25,7 @@ export interface UserData {
   roleDual?: string;
 }
 
-export type Category = 'Bug' | 'Suggestion' | 'Complaint' | 'Other';
+export type Category = 'Positive' | 'Suggestion' | 'Bug' | 'Other';
 
 export interface CategoryOption {
   key: Category;
@@ -47,12 +47,15 @@ export interface FeedbackItem {
 
 // ==================== CONSTANTS ====================
 
+// Positive is listed first so it's the default/pre-selected category in the UI.
 export const CATEGORIES: CategoryOption[] = [
+  { key: 'Positive', icon: 'thumbs-up' },
   { key: 'Suggestion', icon: 'lightbulb' },
   { key: 'Bug', icon: 'bug' },
-  { key: 'Complaint', icon: 'triangle-exclamation' },
   { key: 'Other', icon: 'ellipsis' },
 ];
+
+export const DEFAULT_CATEGORY: Category = 'Positive';
 
 export const STATUS_LABEL: Record<string, string> = {
   pending: 'Pending',
@@ -69,7 +72,7 @@ export const STATUS_COLOR: Record<string, string> = {
 export const CATEGORY_ICON: Record<string, string> = {
   Bug: 'bug',
   Suggestion: 'lightbulb',
-  Complaint: 'triangle-exclamation',
+  Positive: 'thumbs-up',
   Other: 'ellipsis',
 };
 
@@ -155,7 +158,7 @@ export function subscribeToUserFeedback(
 }
 
 export async function submitFeedback(
-  category: Category,
+  category: Category = DEFAULT_CATEGORY,
   message: string,
   userData: UserData | null
 ): Promise<string> {

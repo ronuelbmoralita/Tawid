@@ -63,7 +63,7 @@ export const STATUS_COLOR: Record<string, string> = {
 export const CATEGORY_ICON: Record<string, string> = {
   Bug: 'bug',
   Suggestion: 'lightbulb',
-  Complaint: 'triangle-exclamation',
+  Positive: 'thumbs-up',
   Other: 'ellipsis',
 };
 

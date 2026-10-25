@@ -8,9 +8,11 @@
     "userInterfaceStyle": "light",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.lookal.tawid"
+      "bundleIdentifier": "com.lookal.tawid",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
+      "package": "com.lookal.tawid",
       "googleServicesFile": "./google-services.json",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
@@ -18,8 +20,7 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false,
-      "package": "com.lookal.tawid"
+      "predictiveBackGestureEnabled": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -32,6 +33,19 @@
     "plugins": [
       "expo-build-properties",
       "expo-sharing",
+      "expo-notifications",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Kailangan ng Tawid ang lokasyon mo para ipakita ang pinakamalapit na daungan/pantalan."
+        }
+      ],
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.19479591711-pkk5t18ocmkvgktco6fgc40p7j2reup9"
+        }
+      ],
       [
         "expo-splash-screen",
         {

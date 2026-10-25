@@ -7,6 +7,7 @@ import { collection, query, orderBy, onSnapshot, Timestamp } from 'firebase/fire
 
 import { colors } from '../../../../constants/colors';
 import { firestore } from '../../../../firebase/firebaseConfig';
+import { useTabBarSpace } from '../../../../tabStyle';
 
 interface NearestPort {
     city: string;
@@ -42,6 +43,9 @@ function formatTimestamp(ts?: Timestamp) {
 }
 
 export default function UsersScreen() {
+
+    const bottomSpace = useTabBarSpace();
+
     const [users, setUsers] = useState<UserData[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
@@ -176,7 +180,7 @@ export default function UsersScreen() {
         }
 
         return (
-            <ScrollView showsVerticalScrollIndicator={false}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: bottomSpace }}>
                 {filteredUsers.map((item) => renderUser(item))}
             </ScrollView>
         );
