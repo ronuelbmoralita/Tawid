@@ -83,7 +83,7 @@ export function TawidTabBar({ state, navigation, blurTarget, badges }: Props) {
       {/* Wrapper para sa anino — hindi lalabas ang anino sa BlurView dahil sa overflow: 'hidden' */}
       <View style={styles.shadow}>
         <BlurView
-          intensity={10}
+          intensity={20}
           tint="light"
           blurTarget={blurTarget}
           blurMethod="dimezisBlurView"
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     // Android: kailangan ng kulay ang wrapper para lumabas ang elevation.
     // Kung may puting gilid sa mga kurba o nabawasan ang blur, ibaba ang elevation o alisin ito.
     backgroundColor: Platform.OS === 'android' ? '#FFFFFF' : 'transparent',
-    elevation: 5,
+    elevation: 2,
     shadowColor: '#000',
     shadowOpacity: 0.12,
     shadowRadius: 10,
