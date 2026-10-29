@@ -19,7 +19,7 @@ interface WavingProviderProps {
 
 // === Module-level singleton controller ===
 // Lets non-component code (e.g. googleAuth.ts) trigger the waving loader
-// without calling a hook. WavingProvider registers its real show/hide
+// without calling a hook. TawidWavingProvider registers its real show/hide
 // functions here on mount. Calling these before the provider has mounted
 // is a no-op (safe, just does nothing).
 let _showWaving: () => void = () => { };
@@ -103,7 +103,7 @@ export const WavingLoader: React.FC = () => {
   );
 };
 
-export const WavingProvider: React.FC<WavingProviderProps> = ({ children }) => {
+export const TawidWavingProvider: React.FC<WavingProviderProps> = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const loadingStartTime = useRef<number | null>(null);
 
@@ -159,10 +159,10 @@ export const WavingProvider: React.FC<WavingProviderProps> = ({ children }) => {
   );
 };
 
-export const useWaving = (): WavingContextType => {
+export const useTawidWaving = (): WavingContextType => {
   const context = useContext(WavingContext);
   if (!context) {
-    throw new Error('useWaving must be used within WavingProvider');
+    throw new Error('useTawidWaving must be used within TawidWavingProvider');
   }
   return context;
 };

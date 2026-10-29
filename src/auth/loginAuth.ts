@@ -22,7 +22,7 @@ import { getFunctions, httpsCallable } from 'firebase/functions';
 import { auth, firestore } from '../firebase/firebaseConfig';
 import { saveTransactionSilently } from '../firebase/tawidTransaction';
 import { Alert } from 'react-native';
-import { waving } from '../components/waving';
+import { waving } from '../components/tawidWaving';
 import { welcomeNotif } from '../notifications/welcomeNotif';
 import notifyCompany from '../notifications/notifyCompany';
 

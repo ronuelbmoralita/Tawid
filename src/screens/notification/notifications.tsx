@@ -11,10 +11,10 @@ import { FlashList } from '@shopify/flash-list';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { auth, firestore } from '../firebase/firebaseConfig';
-import { colors } from '../constants/colors';
-import { TawidEmptyState } from '../components/tawidEmptyState';
-import { useTransactionCounts, TxnNotification } from '../firebase/useTransactionCounts';
+import { auth, firestore } from '../../firebase/firebaseConfig';
+import { colors } from '../../constants/colors';
+import { TawidEmptyState } from '../../components/tawidEmptyState';
+import { useTransactionCounts, TxnNotification } from '../../firebase/useTransactionCounts';
 
 const PAGE_SIZE = 10;
 

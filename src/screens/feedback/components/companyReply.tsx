@@ -40,7 +40,7 @@ import {
   FILTER_OPTIONS,
 } from './companyReplyFunc';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
-import { useTabBarSpace } from '../../../tabStyle';
+import { useTabBarSpace } from '../../tabStyle';
 
 export default function CompanyReply({ userData }: { userData: UserData | null }) {
   // State — feedback list + reply

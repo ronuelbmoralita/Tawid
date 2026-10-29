@@ -9,7 +9,7 @@ import { auth, firestore } from '../../firebase/firebaseConfig';
 import { doc, updateDoc } from 'firebase/firestore';
 import { googleLogout } from '../../auth/loginAuth';
 import ProfileContent from './profileContent';
-import { useTabBarSpace } from '../../tabStyle';
+import { useTabBarSpace } from '../tabStyle';
 
 interface ProfileProps {
   userData?: any;

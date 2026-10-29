@@ -4,14 +4,12 @@ import { Text, View, Animated, TouchableOpacity } from 'react-native';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { colors } from '../../../../constants/colors';
 import { subscribeToSuspension } from '../../dashboard/dashboardFunctions';
-import {
-  useSlideUpFadeIn,
-  useScaleFadeIn,
-  useStaggeredItem,
-} from '../../../../constants/animation';
+import { useSlideUpFadeIn, useScaleFadeIn, useStaggeredItem } from '../../../../constants/animation';
 import ScheduleModal, { ScheduleModalRef } from './scheduleModal';
 import TawidCard from '../../../../components/tawidCard';
-import { useTabBarSpace } from '../../../../tabStyle';
+import { useTabBarSpace } from '../../../tabStyle';
+import ScheduleSkeleton from './scheduleSkeleton';
+import BreathingDot from './scheduleBreathingDot';
 
 interface ScheduleItem {
   vessel: string;
@@ -24,6 +22,7 @@ interface ScheduleProps {
   schedule: ScheduleItem[];
   isRouteSelected: boolean | string | null;
   routeUpdatedAt?: any;
+  loading?: boolean;
   children?: React.ReactNode;
 }
 
@@ -33,7 +32,6 @@ interface SectionProps {
   data: ScheduleItem[];
   startDelay?: number;
   isSuspended?: boolean;
-  onBookPress: () => void;
 }
 
 const vesselStyles = {
@@ -43,22 +41,33 @@ const vesselStyles = {
 } as const;
 
 const FALLBACK_VESSEL = { icon: 'ferry', color: '#6B7280' } as const;
-
 const getVesselStyle = (type: string) =>
   vesselStyles[type as keyof typeof vesselStyles] ?? FALLBACK_VESSEL;
 
 const formatUpdatedAt = (timestamp: any): string => {
   if (!timestamp?.toDate) return '';
   const d = timestamp.toDate();
-  return `${d.toLocaleDateString('en-PH', {
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-  })} at ${d.toLocaleTimeString('en-PH', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true,
-  })}`;
+  return `${d.toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })} at ${d.toLocaleTimeString('en-PH', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
+};
+
+// Helper para malaman kung past na yung oras
+const isPastTime = (timeStr: string): boolean => {
+  if (!timeStr || timeStr === '00:00') return false;
+  try {
+    const now = new Date();
+    const [time, modifier] = timeStr.split(' ');
+    let [hours, minutes] = time.split(':').map(Number);
+
+    if (modifier === 'PM' && hours < 12) hours += 12;
+    if (modifier === 'AM' && hours === 12) hours = 0;
+
+    const scheduledTime = new Date();
+    scheduledTime.setHours(hours, minutes, 0, 0);
+
+    return scheduledTime < now;
+  } catch {
+    return false;
+  }
 };
 
 // ============ TRIP ROW ============
@@ -66,16 +75,17 @@ const TripRow = memo(function TripRow({
   trip,
   animationDelay = 0,
   isSuspended = false,
-  onBookPress,
 }: {
   trip: ScheduleItem;
   animationDelay?: number;
   isSuspended?: boolean;
-  onBookPress: () => void;
 }) {
   const { opacity, transform } = useStaggeredItem(animationDelay, 0, 50);
   const isNoSailing = trip.status === 'No Sailing' || isSuspended;
   const style = getVesselStyle(trip.vesselType);
+  
+  // Check kung lumipas na
+  const isDeparted = !isNoSailing && isPastTime(trip.time);
 
   return (
     <Animated.View
@@ -85,78 +95,66 @@ const TripRow = memo(function TripRow({
         alignItems: 'center',
         paddingVertical: 10,
         paddingHorizontal: 4,
-        opacity,
+        opacity: isDeparted ? 0.45 : opacity, // faded kung departed
         transform,
         borderTopWidth: 1,
         borderTopColor: 'rgba(0,0,0,0.05)',
       }}
     >
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1, gap: 4 }}>
         <Text
           style={{
             fontSize: 15,
-            color: colors.black,
+            color: isDeparted ? 'rgba(0,0,0,0.6)' : colors.black,
             fontWeight: '600',
             textDecorationLine: isNoSailing ? 'line-through' : 'none',
           }}
         >
           {trip.vessel}
         </Text>
-        <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 4,
-              backgroundColor: style.color + '15',
-              paddingHorizontal: 8,
-              paddingVertical: 2,
-              borderRadius: 4,
-              borderWidth: 1,
-              borderColor: style.color + '30',
-              marginRight: 8,
-            }}
-          >
-            <FontAwesome6 name={style.icon} size={9} color={style.color} iconStyle="solid" />
-            <Text style={{ fontSize: 10, color: style.color, fontWeight: '600' }}>
-              {trip.vesselType}
-            </Text>
-          </View>
+
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            alignSelf: 'flex-start',
+            gap: 4,
+            backgroundColor: isDeparted ? 'rgba(0,0,0,0.05)' : style.color + '15',
+            paddingHorizontal: 8,
+            paddingVertical: 2,
+            borderRadius: 4,
+            borderWidth: 1,
+            borderColor: isDeparted ? 'rgba(0,0,0,0.1)' : style.color + '30',
+          }}
+        >
+          <FontAwesome6
+            name={style.icon}
+            size={9}
+            color={isDeparted ? 'rgba(0,0,0,0.4)' : style.color}
+            iconStyle="solid"
+          />
           <Text
             style={{
-              fontSize: 13,
-              color: isNoSailing ? colors.red : colors.black,
-              fontWeight: '500',
+              fontSize: 10,
+              color: isDeparted ? 'rgba(0,0,0,0.4)' : style.color,
+              fontWeight: '600',
             }}
           >
-            {isNoSailing ? '00:00' : trip.time}
+            {trip.vesselType}
           </Text>
         </View>
       </View>
-      <TouchableOpacity
+
+      <Text
         style={{
-          backgroundColor: isNoSailing ? '#ccc' : colors.brand,
-          paddingHorizontal: 14,
-          paddingVertical: 6,
-          borderRadius: 6,
-          opacity: isNoSailing ? 0.5 : 1,
-          minWidth: 70,
-          alignItems: 'center',
+          fontSize: 15,
+          fontWeight: '600',
+          color: isNoSailing ? colors.red : isDeparted ? 'rgba(0,0,0,0.4)' : colors.black,
+          textDecorationLine: isDeparted ? 'line-through' : 'none',
         }}
-        onPress={onBookPress}
-        disabled={isNoSailing}
-        activeOpacity={0.7}
       >
-        <Text
-          style={{
-            color: isNoSailing ? '#666' : colors.white,
-            fontSize: 12,
-            fontWeight: '600',
-          }}
-        >
-          {isNoSailing ? 'Unavailable' : 'Book'}
-        </Text>
-      </TouchableOpacity>
+        {isNoSailing ? '00:00' : trip.time}
+      </Text>
     </Animated.View>
   );
 });
@@ -168,7 +166,6 @@ const ScheduleSection = memo(function ScheduleSection({
   data,
   startDelay = 0,
   isSuspended = false,
-  onBookPress,
 }: SectionProps) {
   const { opacity, transform } = useScaleFadeIn(startDelay, 400, 0.95);
   const color = isSailing && !isSuspended ? colors.brand : colors.red;
@@ -179,40 +176,52 @@ const ScheduleSection = memo(function ScheduleSection({
         style={{
           flexDirection: 'row',
           alignItems: 'center',
+          justifyContent: 'space-between',
           paddingVertical: 4,
-          paddingHorizontal: 10,
+          paddingHorizontal: 5,
         }}
       >
-        {isSuspended ? (
-          <FontAwesome6
-            name="ban"
-            size={11}
-            color={color}
-            iconStyle="solid"
-            style={{ marginRight: 8 }}
-          />
-        ) : (
-          <View
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          {isSuspended ? (
+            <FontAwesome6
+              name="ban"
+              size={11}
+              color={color}
+              iconStyle="solid"
+              style={{ marginRight: 8 }}
+            />
+          ) : (
+            <BreathingDot color={color} size={10} active={isSailing} style={{ marginRight: 8 }} />
+          )}
+          <Text
             style={{
-              width: 10,
-              height: 10,
-              borderRadius: 5,
-              backgroundColor: color,
-              marginRight: 8,
+              fontSize: 14,
+              fontWeight: '700',
+              color: colors.black,
+              textTransform: 'uppercase',
+              letterSpacing: 1,
             }}
-          />
-        )}
-        <Text
+          >
+            {title}
+          </Text>
+        </View>
+
+        <View
           style={{
-            fontSize: 14,
-            fontWeight: '700',
-            color,
-            textTransform: 'uppercase',
-            letterSpacing: 1,
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 4,
+            backgroundColor: color + '30',
+            paddingHorizontal: 8,
+            paddingVertical: 3,
+            borderRadius: 10,
           }}
         >
-          {title}
-        </Text>
+          <FontAwesome6 name="route" size={12} color={colors.black} iconStyle="solid" />
+          <Text style={{ fontSize: 12, fontWeight: '700', color: colors.black }}>
+            {data.length} {data.length === 1 ? 'trip' : 'trips'}
+          </Text>
+        </View>
       </View>
 
       {data.map((item, index) => (
@@ -221,7 +230,6 @@ const ScheduleSection = memo(function ScheduleSection({
           trip={item}
           animationDelay={index}
           isSuspended={isSuspended}
-          onBookPress={onBookPress}
         />
       ))}
     </TawidCard>
@@ -230,51 +238,85 @@ const ScheduleSection = memo(function ScheduleSection({
 
 // ============ NOTICE CARD ============
 const NoticeCard = memo(function NoticeCard({ onPress }: { onPress: () => void }) {
-  const { opacity, transform } = useSlideUpFadeIn(300, 400, 30);
+  const { opacity, transform } = useSlideUpFadeIn(0, 400, 30);
+
+  const btnScale = useRef(new Animated.Value(1)).current;
+  const iconPulse = useRef(new Animated.Value(1)).current;
+
+  // pulse ng icon: 3 beses lang, tapos titigil
+  useEffect(() => {
+    const anim = Animated.sequence([
+      Animated.delay(600),
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(iconPulse, { toValue: 1.2, duration: 500, useNativeDriver: true }),
+          Animated.timing(iconPulse, { toValue: 1, duration: 500, useNativeDriver: true }),
+        ]),
+        { iterations: 3 }
+      ),
+    ]);
+    anim.start();
+    return () => anim.stop();
+  }, [iconPulse]);
+
+  const pressBtn = (pressed: boolean) =>
+    Animated.spring(btnScale, {
+      toValue: pressed ? 0.92 : 1,
+      useNativeDriver: true,
+      stiffness: pressed ? 500 : 280,
+      damping: pressed ? 30 : 8,
+      mass: 1,
+    }).start();
 
   return (
     <Animated.View
       style={{
         opacity,
         transform,
-        backgroundColor: 'rgba(255, 193, 7, 0.15)',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        backgroundColor: colors.brand,
         borderRadius: 8,
-        padding: 12,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
         borderWidth: 1,
-        borderColor: 'rgba(255, 193, 7, 0.3)',
-        gap: 5,
+        borderColor: colors.brand + '30',
       }}
     >
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-        <FontAwesome6
-          name="triangle-exclamation"
-          size={13}
-          color={colors.orange}
-          iconStyle="solid"
-        />
-        <Text style={{ fontSize: 14, fontWeight: '600', color: colors.orange }}>
-          Tawid Not Yet Activated
+      <Animated.View style={{ transform: [{ scale: iconPulse }] }}>
+        <FontAwesome6 name="circle-info" size={24} color={colors.black} iconStyle="solid" />
+      </Animated.View>
+      <View style={{ flex: 1 }}>
+        <Text style={{ fontSize: 13, fontWeight: '600', color: colors.black }}>
+          Booking not available yet
+        </Text>
+        <Text style={{ fontSize: 12, color: colors.black, opacity: 0.7 }} numberOfLines={2}>
+          Request activation for your port.
         </Text>
       </View>
-      <Text style={{ fontSize: 13, color: '#666', textAlign: 'justify' }}>
-        Booking and other features are unavailable. Request activation from your
-        municipality.
-      </Text>
-      <TouchableOpacity
-        style={{
-          backgroundColor: colors.brand,
-          paddingHorizontal: 15,
-          paddingVertical: 8,
-          borderRadius: 6,
-          alignSelf: 'flex-start',
-        }}
-        onPress={onPress}
-        activeOpacity={0.7}
-      >
-        <Text style={{ color: colors.white, fontSize: 13, fontWeight: '600' }}>
-          Request Activation
-        </Text>
-      </TouchableOpacity>
+      <Animated.View style={{ transform: [{ scale: btnScale }] }}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: colors.black,
+            paddingHorizontal: 12,
+            paddingVertical: 7,
+            borderRadius: 6,
+            // subtle drop shadow
+            shadowColor: 'rgba(0,0,0,0.5)',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 1,
+            shadowRadius: 4,
+            elevation: 4,
+          }}
+          onPress={onPress}
+          onPressIn={() => pressBtn(true)}
+          onPressOut={() => pressBtn(false)}
+          activeOpacity={0.7}
+        >
+          <Text style={{ color: colors.brand, fontSize: 12, fontWeight: '600' }}>Request</Text>
+        </TouchableOpacity>
+      </Animated.View>
     </Animated.View>
   );
 });
@@ -284,11 +326,10 @@ const Schedule: React.FC<ScheduleProps> = ({
   schedule,
   isRouteSelected,
   routeUpdatedAt,
+  loading = false,
   children,
 }) => {
-
   const bottomSpace = useTabBarSpace();
-
   const [isSuspended, setIsSuspended] = useState(false);
   const petitionRef = useRef<ScheduleModalRef>(null);
   const { opacity, transform } = useSlideUpFadeIn(200, 600, 30);
@@ -303,20 +344,9 @@ const Schedule: React.FC<ScheduleProps> = ({
   const sections = useMemo(() => {
     const sailing = schedule.filter((t) => t.status === 'Sailing');
     const noSailing = schedule.filter((t) => t.status === 'No Sailing');
-
     return [
-      {
-        id: 'sailing',
-        isSailing: true,
-        title: isSuspended ? 'CANCELLED' : 'SAILING',
-        data: sailing,
-      },
-      {
-        id: 'nosailing',
-        isSailing: false,
-        title: isSuspended ? 'CANCELLED' : 'NO SAILING',
-        data: noSailing,
-      },
+      { id: 'sailing', isSailing: true, title: isSuspended ? 'CANCELLED' : 'SAILING', data: sailing },
+      { id: 'nosailing', isSailing: false, title: isSuspended ? 'CANCELLED' : 'NO SAILING', data: noSailing },
     ].filter((s) => s.data.length > 0);
   }, [schedule, isSuspended]);
 
@@ -332,7 +362,9 @@ const Schedule: React.FC<ScheduleProps> = ({
         <View style={{ paddingHorizontal: 15, paddingBottom: 15, gap: 15 }}>
           {children && <View>{children}</View>}
 
-          {!isRouteSelected ? (
+          {loading ? (
+            <ScheduleSkeleton />
+          ) : !isRouteSelected ? (
             <View style={{ padding: 30, alignItems: 'center' }}>
               <Text style={{ color: 'rgba(0,0,0,0.6)', fontSize: 16, textAlign: 'center' }}>
                 Please select both Origin and Destination ports to view the schedule
@@ -346,37 +378,6 @@ const Schedule: React.FC<ScheduleProps> = ({
             </View>
           ) : (
             <>
-              {!!lastUpdated && (
-                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                    <FontAwesome6
-                      name="clock"
-                      size={10}
-                      color="rgba(0,0,0,0.55)"
-                      iconStyle="solid"
-                    />
-                    <Text style={{ fontSize: 11, color: 'rgba(0,0,0,0.55)', fontWeight: '500' }}>
-                      Last updated
-                    </Text>
-                  </View>
-                  <Text style={{ fontSize: 11, color: 'rgba(0,0,0,0.75)', fontWeight: '600' }}>
-                    {lastUpdated}
-                  </Text>
-                </View>
-              )}
-
-              {sections.map((section, i) => (
-                <ScheduleSection
-                  key={section.id}
-                  title={section.title}
-                  isSailing={section.isSailing}
-                  data={section.data}
-                  startDelay={i * 150}
-                  isSuspended={isSuspended}
-                  onBookPress={handleRequestActivation}
-                />
-              ))}
-
               {isSuspended ? (
                 <View
                   style={{
@@ -393,13 +394,64 @@ const Schedule: React.FC<ScheduleProps> = ({
                       All Trips Cancelled
                     </Text>
                   </View>
-                  <Text style={{ fontSize: 13, color: '#666' }}>
+                  <Text style={{ fontSize: 13, color: colors.black, opacity: 0.7 }}>
                     Please check back later for updates.
                   </Text>
                 </View>
               ) : (
                 <NoticeCard onPress={handleRequestActivation} />
               )}
+
+              {!!lastUpdated && (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 5,
+                      backgroundColor: colors.brand + '30',
+                      paddingHorizontal: 8,
+                      paddingVertical: 3,
+                      borderRadius: 10,
+                    }}
+                  >
+                    <FontAwesome6 name="clock" size={10} color={colors.black} iconStyle="solid" />
+                    <Text style={{ fontSize: 11, fontWeight: '600', color: colors.black }}>
+                      Last updated
+                    </Text>
+                  </View>
+
+                  <View
+                    style={{
+                      backgroundColor: colors.brand + '30',
+                      paddingHorizontal: 8,
+                      paddingVertical: 3,
+                      borderRadius: 10,
+                    }}
+                  >
+                    <Text style={{ fontSize: 11, fontWeight: '600', color: colors.black }}>
+                      {lastUpdated}
+                    </Text>
+                  </View>
+                </View>
+              )}
+
+              {sections.map((section, i) => (
+                <ScheduleSection
+                  key={section.id}
+                  title={section.title}
+                  isSailing={section.isSailing}
+                  data={section.data}
+                  startDelay={i * 150}
+                  isSuspended={isSuspended}
+                />
+              ))}
             </>
           )}
         </View>

@@ -1,4 +1,4 @@
-// Wave.tsx
+// TawidWave.tsx
 import React, { useEffect, useRef, useMemo } from 'react';
 import { Animated, Easing, View, Dimensions } from 'react-native';
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
@@ -15,7 +15,7 @@ interface WaveProps {
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
-export default function Wave({
+export default function TawidWave({
   height = 120,
   width,
   color = '#ffffff',

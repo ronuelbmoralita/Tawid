@@ -7,7 +7,7 @@ import { collection, query, orderBy, onSnapshot, Timestamp } from 'firebase/fire
 
 import { colors } from '../../../../constants/colors';
 import { firestore } from '../../../../firebase/firebaseConfig';
-import { useTabBarSpace } from '../../../../tabStyle';
+import { useTabBarSpace } from '../../../tabStyle';
 
 interface NearestPort {
     city: string;

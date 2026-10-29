@@ -3,15 +3,15 @@ import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as SplashScreen from 'expo-splash-screen';
-import Login from './screens/login';
-import Offline from './screens/offline';
-import Notifications from './screens/notifications';
-import MyTab from './tab';
+import Login from './screens/login/login';
+import Notifications from './screens/notification/notifications';
+import MyTab from './screens/tab';
 import { StatusBar } from 'expo-status-bar';
 import { auth, firestore } from './firebase/firebaseConfig';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
-import { WavingProvider } from './components/waving';
+import { TawidWavingProvider } from './components/tawidWaving';
+import TawidOffline from './components/tawidOffline';
 import { AppBackButton } from './AppBackButton';
 import setupNotif from './notifications/setupNotif';
 import NetInfo from '@react-native-community/netinfo';
@@ -157,14 +157,14 @@ export default function App() {
   }, [isConnected]);
 
   if (isConnected === null) return null;
-  if (isConnected === false) return <Offline />;
+  if (isConnected === false) return <TawidOffline />;
 
   return (
     <NavigationContainer>
-      <WavingProvider>
+      <TawidWavingProvider>
         <StatusBar style="dark" />
         <RootStack />
-      </WavingProvider>
+      </TawidWavingProvider>
     </NavigationContainer>
   );
 }

@@ -9,6 +9,7 @@ import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 
 // Import ang ating standalone seaCondition helper
 import { fetchSeaConditionData, SeaCondition } from './seaCondition';
+import SeaAdvisorySkeleton from './seaAdvisorySkeleton'; // NEW
 
 const AnimatedPath = Animated.createAnimatedComponent(Path);
 
@@ -70,6 +71,7 @@ export default function SeaAdvisory({
   const [cond, setCond] = useState<SeaCondition>(isPreview ? (condition as SeaCondition) : 'calm');
   const [waveHeight, setWaveHeight] = useState(isPreview ? PREVIEW_HEIGHTS[condition as SeaCondition] : 0);
   const [loading, setLoading] = useState(false);
+  const [initialLoad, setInitialLoad] = useState(autoFetch && !isPreview); // NEW
   const [noData, setNoData] = useState(false);
   const [isWarning, setIsWarning] = useState(false);
   const [updated, setUpdated] = useState(new Date());
@@ -114,6 +116,7 @@ export default function SeaAdvisory({
       setNoData(true);
     } finally {
       setLoading(false);
+      setInitialLoad(false); // NEW
     }
   };
 
@@ -162,6 +165,18 @@ export default function SeaAdvisory({
   const dBack = useMemo(() => makeWave(-10, 0.35), [anim, amp, height, W]);
   const dMid = useMemo(() => makeWave(-5, 0.5), [anim, amp, height, W]);
   const dFront = useMemo(() => makeWave(0, 1), [anim, amp, height, W]);
+
+  // NEW: skeleton habang wala pa ang unang data (nasa ibaba ng lahat ng hooks)
+  if (initialLoad) {
+    return (
+      <Animated.View
+        style={[entranceAnim, { paddingHorizontal: 15 }]}
+        onLayout={(e) => setW(e.nativeEvent.layout.width)}
+      >
+        <SeaAdvisorySkeleton height={height} />
+      </Animated.View>
+    );
+  }
 
   return (
     <Animated.View

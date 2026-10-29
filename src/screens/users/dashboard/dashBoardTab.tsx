@@ -1,4 +1,4 @@
-// screens/components/tab.tsx
+// screens/dashboard/dashBoardTab.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import {
   View,
@@ -6,8 +6,9 @@ import {
   TouchableOpacity,
   Animated,
 } from 'react-native';
-import { colors } from '../constants/colors';
-import TawidCard from './tawidCard';
+import TawidCard from '../../../components/tawidCard';
+import { colors } from '../../../constants/colors';
+import DashboardTabSkeleton from './dashBoardTabSkeleton';
 
 interface TabItem {
   key: string;
@@ -20,9 +21,16 @@ interface TabProps {
   activeTab?: string;
   onTabChange?: (key: string) => void;
   fillHeight?: boolean;
+  loading?: boolean; // NEW
 }
 
-export default function Tab({ tabs, activeTab: externalActiveTab, onTabChange, fillHeight = true }: TabProps) {
+export default function DashboardTab({
+  tabs,
+  activeTab: externalActiveTab,
+  onTabChange,
+  fillHeight = true,
+  loading = false, // NEW
+}: TabProps) {
   const [internalActiveTab, setInternalActiveTab] = useState(tabs[0]?.key || '');
   const currentTab = externalActiveTab !== undefined ? externalActiveTab : internalActiveTab;
 
@@ -112,7 +120,7 @@ export default function Tab({ tabs, activeTab: externalActiveTab, onTabChange, f
           gap: 15
         }
       ]}>
-      {/* Tab Profile - Using TawidCard with brand color */}
+      {/* DashboardTab Profile - Using TawidCard with brand color */}
       <TawidCard color={colors.brand}>
         <View style={{ flexDirection: 'row' }}>
           {tabs.map((tab) => (
@@ -153,7 +161,7 @@ export default function Tab({ tabs, activeTab: externalActiveTab, onTabChange, f
           ))}
         </View>
       </TawidCard>
-      {/* Tab Content - Using TawidCard with subtle tint */}
+      {/* DashboardTab Content - Using TawidCard with subtle tint */}
       <TawidCard
         color={colors.brand}
         style={[
@@ -182,7 +190,7 @@ export default function Tab({ tabs, activeTab: externalActiveTab, onTabChange, f
             },
           ],
         }}>
-        {tabs.find((tab) => tab.key === currentTab)?.component}
+        {loading ? <DashboardTabSkeleton /> : tabs.find((tab) => tab.key === currentTab)?.component}
       </TawidCard>
     </Animated.View>
   );

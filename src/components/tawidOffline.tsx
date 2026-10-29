@@ -6,10 +6,10 @@ import NetInfo from '@react-native-community/netinfo';
 import { Image } from 'expo-image';
 
 import { colors } from '../constants/colors';
-import Wave from '../components/wave';
-import TawidCard from '../components/tawidCard';
+import TawidWave from './tawidWave';
+import TawidCard from './tawidCard';
 
-export default function Offline({ onRetry }: { onRetry?: () => void }) {
+export default function TawidOffline({ onRetry }: { onRetry?: () => void }) {
   const [checking, setChecking] = React.useState(false);
   const statusBarHeight = Platform.OS === 'ios' ? 50 : StatusBar.currentHeight || 24;
 
@@ -38,7 +38,7 @@ export default function Offline({ onRetry }: { onRetry?: () => void }) {
       />
 
       <SafeAreaView style={{ flex: 1 }} edges={['left', 'right', 'bottom']}>
-        <Wave
+        <TawidWave
           height={200}
           color={colors.red}
           opacity={0.2}

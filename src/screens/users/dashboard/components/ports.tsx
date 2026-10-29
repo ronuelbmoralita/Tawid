@@ -5,7 +5,7 @@ import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { colors } from '../../../../constants/colors';
 import TawidModal from '../../../../components/tawidModal';
 import { Port, subscribeToPorts, addPort, updatePort, deletePort } from '../dashboardFunctions';
-import { useTabBarSpace } from '../../../../tabStyle';
+import { useTabBarSpace } from '../../../tabStyle';
 
 const PortForm = ({ initial, formRef }: any) => {
   const [local, setLocal] = useState(initial);

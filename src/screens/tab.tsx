@@ -7,14 +7,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { onAuthStateChanged, User } from 'firebase/auth';
 import { doc, onSnapshot } from 'firebase/firestore';
 
-import PaxHome from './screens/users/passenger/paxHome';
-import Profile from './screens/profile/profile';
-import DashboardHome from './screens/users/dashboard/dashboardHome';
-import Feedback from './screens/feedback/feedbackHome';
-import { auth, firestore } from './firebase/firebaseConfig';
-import { useWaving } from './components/waving';
-import { updateNearestPort } from './screens/users/passenger/home/seaNearestPort';
-import { useTransactionCounts } from './firebase/useTransactionCounts';
+import PaxHome from './users/passenger/paxHome';
+import Profile from './profile/profile';
+import DashboardHome from './users/dashboard/dashboardHome';
+import Feedback from './feedback/feedbackHome';
+import { auth, firestore } from '../firebase/firebaseConfig';
+import { useTawidWaving } from '../components/tawidWaving';
+import { updateNearestPort } from './users/passenger/home/seaNearestPort';
+import { useTransactionCounts } from '../firebase/useTransactionCounts';
 import { TawidTabBar, TabBarBridge, BarSnapshot } from './tabStyle';
 
 const Stack = createNativeStackNavigator();
@@ -81,7 +81,7 @@ export default function AppNavigator({ splashDone }: { splashDone: boolean }) {
   const [authUser, setAuthUser] = React.useState<User | null>(null);
   const [authReady, setAuthReady] = React.useState(false);
   const [userData, setUserData] = React.useState<UserData | null>(null);
-  const { showWaving, hideWaving } = useWaving();
+  const { showWaving, hideWaving } = useTawidWaving();
   const nearestPortRequested = React.useRef(false);
 
   React.useEffect(() => onAuthStateChanged(auth, (user) => {

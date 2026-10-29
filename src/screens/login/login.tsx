@@ -1,85 +1,67 @@
 // login.tsx
 import React from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Dimensions,
-  TouchableOpacity,
-  Animated,
-  StatusBar,
-} from 'react-native';
+import { View, Text, FlatList, Dimensions, TouchableOpacity, Animated, StatusBar } from 'react-native';
 import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 
-import { colors } from '../constants/colors';
-import Wave from '../components/wave';
-import TawidCard from '../components/tawidCard';
-import LoginPermission from './loginPermission'; // Import the new component
-import { useLoginLogic, ONBOARDING_DATA, OnboardingItemType } from './loginFunctions';
+import { colors } from '../../constants/colors';
+import TawidWave from '../../components/tawidWave';
+import TawidCard from '../../components/tawidCard';
+import LoginPermission from './loginPermission';
+import { useLoginLogic, getItemLayout, OnboardingItemType } from './loginFunctions';
 
 const { width } = Dimensions.get('window');
 const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
-const AnimatedGraphic = ({ icon, scrollX, index }: { icon: any; scrollX: Animated.Value; index: number }) => {
-  const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
-
-  return (
-    <TawidCard
-      color={colors.brand}
-      animatedStyle={{
-        transform: [
-          { scale: scrollX.interpolate({ inputRange, outputRange: [0.85, 1, 0.85], extrapolate: 'clamp' }) },
-          { rotate: scrollX.interpolate({ inputRange, outputRange: ['-4deg', '0deg', '4deg'], extrapolate: 'clamp' }) },
-          { translateY: scrollX.interpolate({ inputRange, outputRange: [15, 0, 15], extrapolate: 'clamp' }) },
-        ],
-        opacity: scrollX.interpolate({ inputRange, outputRange: [0.4, 1, 0.4], extrapolate: 'clamp' }),
-      }}
-      style={{
-        width: 300,
-        height: 300,
-        overflow: 'hidden',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 24,
-      }}>
-      <Image source={icon} style={{ width: 300, height: 300 }} contentFit="contain" />
-    </TawidCard>
-  );
-};
-
-const PaginationDot = ({ scrollXJS, index }: { scrollXJS: Animated.Value; index: number }) => {
-  const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
-
-  const dotWidth = scrollXJS.interpolate({
-    inputRange,
-    outputRange: [8, 24, 8],
+// Interpolates a scroll value around slide `index`: [previous, current, next]
+const lerp = (scroll: Animated.Value, index: number, outputRange: number[] | string[]) =>
+  scroll.interpolate({
+    inputRange: [(index - 1) * width, index * width, (index + 1) * width],
+    outputRange,
     extrapolate: 'clamp',
   });
 
-  const opacity = scrollXJS.interpolate({
-    inputRange,
-    outputRange: [0.3, 1, 0.3],
-    extrapolate: 'clamp',
-  });
+const AnimatedGraphic = ({ icon, scrollX, index }: { icon: any; scrollX: Animated.Value; index: number }) => (
+  <TawidCard
+    color={colors.brand}
+    animatedStyle={{
+      transform: [
+        { scale: lerp(scrollX, index, [0.85, 1, 0.85]) },
+        { rotate: lerp(scrollX, index, ['-4deg', '0deg', '4deg']) },
+        { translateY: lerp(scrollX, index, [15, 0, 15]) },
+      ],
+      opacity: lerp(scrollX, index, [0.4, 1, 0.4]),
+    }}
+    style={{
+      width: 300,
+      height: 300,
+      overflow: 'hidden',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: 24,
+    }}>
+    <Image source={icon} style={{ width: 300, height: 300 }} contentFit="contain" />
+  </TawidCard>
+);
 
-  return (
-    <Animated.View
-      style={{
-        height: 6,
-        borderRadius: 3,
-        marginHorizontal: 3,
-        backgroundColor: colors.brand,
-        width: dotWidth,
-        opacity,
-      }}
-    />
-  );
-};
+const PaginationDot = ({ scrollXJS, index }: { scrollXJS: Animated.Value; index: number }) => (
+  <Animated.View
+    style={{
+      height: 6,
+      borderRadius: 3,
+      marginHorizontal: 3,
+      backgroundColor: colors.brand,
+      width: lerp(scrollXJS, index, [8, 24, 8]),
+      opacity: lerp(scrollXJS, index, [0.3, 1, 0.3]),
+    }}
+  />
+);
 
 export default function Login() {
   const {
+    isReady,
+    slides,
     hasLocation,
     hasNotif,
     isPermissionsGranted,
@@ -90,7 +72,6 @@ export default function Login() {
     buttonWidth,
     opacity,
     transform,
-    getItemLayout,
     scrollToNext,
     skipToLogin,
     requestLocationPermission,
@@ -99,33 +80,27 @@ export default function Login() {
   } = useLoginLogic();
 
   const renderOnboardingItem = ({ item, index }: { item: OnboardingItemType; index: number }) => {
-    const inputRange = [(index - 1) * width, index * width, (index + 1) * width];
-
-    const textStyle = {
-      opacity: scrollX.interpolate({ inputRange, outputRange: [0.2, 1, 0.2], extrapolate: 'clamp' }),
-      transform: [
-        { translateX: scrollX.interpolate({ inputRange, outputRange: [40, 0, -40], extrapolate: 'clamp' }) },
-      ],
-    };
-
     const isFirstSlide = item.id === '1';
-
-    // Dynamic Description for Slide 1
-    const slideDesc = isFirstSlide
-      ? isPermissionsGranted
-        ? 'A community-first digital port platform by LOOKAL bridging local port operations and passengers.'
-        : item.desc
-      : item.desc;
 
     return (
       <View style={{ width, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 24 }}>
         <AnimatedGraphic icon={item.icon} scrollX={scrollX} index={index} />
-        <Animated.View style={[{ alignItems: 'center', marginTop: 16, gap: 8, width: '100%' }, textStyle]}>
+        <Animated.View
+          style={{
+            alignItems: 'center',
+            marginTop: 16,
+            gap: 8,
+            width: '100%',
+            opacity: lerp(scrollX, index, [0.2, 1, 0.2]),
+            transform: [{ translateX: lerp(scrollX, index, [40, 0, -40]) }],
+          }}>
           <Text style={{ fontSize: 24, fontWeight: '700', color: colors.black, textAlign: 'center', letterSpacing: 0.3 }}>
             {item.title}
           </Text>
           <Text style={{ fontSize: 14, color: 'rgba(0,0,0,0.65)', lineHeight: 21, textAlign: 'center', paddingHorizontal: 8 }}>
-            {slideDesc}
+            {isFirstSlide && isPermissionsGranted
+              ? 'A community-first digital port platform by LOOKAL bridging local port operations and passengers.'
+              : item.desc}
           </Text>
           {isFirstSlide && (
             <LoginPermission
@@ -141,23 +116,24 @@ export default function Login() {
     );
   };
 
+  // Avoid flashing slide 1 while the saved flag is being read
+  if (!isReady) return <View style={{ flex: 1, backgroundColor: colors.white }} />;
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.white }}>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
         <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
 
-        {/* Top Header: Skip Button - Always available (except final slide) */}
+        {/* Top Header: Skip Button - hidden on the final slide */}
         <View style={{ height: 48, paddingHorizontal: 24, justifyContent: 'center', alignItems: 'flex-end', zIndex: 10 }}>
-          {!isFinalSlide ? (
+          {!isFinalSlide && (
             <TouchableOpacity onPress={skipToLogin} activeOpacity={0.7} style={{ paddingVertical: 6, paddingHorizontal: 12 }}>
               <Text style={{ fontSize: 15, fontWeight: '600', color: colors.brand }}>Skip</Text>
             </TouchableOpacity>
-          ) : (
-            <View style={{ height: 32 }} />
           )}
         </View>
 
-        <Wave
+        <TawidWave
           height={200}
           color={colors.brand}
           opacity={0.2}
@@ -169,30 +145,26 @@ export default function Login() {
         <Animated.View style={{ flex: 1, opacity, transform }}>
           <AnimatedFlatList
             ref={slidesRef}
-            data={ONBOARDING_DATA}
+            data={slides}
             renderItem={renderOnboardingItem}
             horizontal
             showsHorizontalScrollIndicator={false}
             pagingEnabled
-            scrollEnabled={true}
+            scrollEnabled={slides.length > 1}
             getItemLayout={getItemLayout}
             keyExtractor={(item: any) => item.id}
-            onScroll={Animated.event(
-              [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-              {
-                useNativeDriver: true,
-                listener: onScrollListener,
-              }
-            )}
+            onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+              useNativeDriver: true,
+              listener: onScrollListener,
+            })}
             scrollEventThrottle={16}
           />
 
           {/* Bottom Footer Controls - Always visible */}
           <View style={{ paddingVertical: 20, paddingHorizontal: 24, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            {/* View stays rendered so the button remains on the right (space-between) */}
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              {ONBOARDING_DATA.map((_, i) => (
-                <PaginationDot key={i} scrollXJS={scrollXJS} index={i} />
-              ))}
+              {slides.length > 1 && slides.map((_, i) => <PaginationDot key={i} scrollXJS={scrollXJS} index={i} />)}
             </View>
 
             <TouchableOpacity activeOpacity={0.85} onPress={scrollToNext}>

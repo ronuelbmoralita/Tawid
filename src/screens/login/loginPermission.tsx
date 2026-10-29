@@ -9,8 +9,8 @@ import {
 } from 'react-native';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 
-import { colors } from '../constants/colors';
-import TawidCard from '../components/tawidCard';
+import { colors } from '../../constants/colors';
+import TawidCard from '../../components/tawidCard';
 
 interface LoginPermissionProps {
     hasLocation: boolean;

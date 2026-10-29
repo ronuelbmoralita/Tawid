@@ -36,7 +36,7 @@ import {
   showLoginRequiredAlert,
   showFeedbackErrorAlert,
 } from './reporterReplyFunc';
-import { useTabBarSpace } from '../../../tabStyle';
+import { useTabBarSpace } from '../../tabStyle';
 
 export default function ReporterReply({ userData }: { userData: UserData | null }) {
   // State — submit form
@@ -235,7 +235,7 @@ export default function ReporterReply({ userData }: { userData: UserData | null 
         <Header
           icon="comment-dots"
           title="Feedback"
-          subtitle="Found a bug, have a suggestion, or a complaint? Let us know."
+          subtitle="Found a bug, have a suggestion, or find the app helpful? Let us know!"
         />
 
         <Form

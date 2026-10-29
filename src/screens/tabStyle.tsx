@@ -6,8 +6,8 @@ import { BlurView } from 'expo-blur';
 import FontAwesome6 from '@react-native-vector-icons/fontawesome6';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { colors } from './constants/colors';
-import { TawidBadge } from './components/tawidBadge';
+import { colors } from '../constants/colors';
+import { TawidBadge } from '../components/tawidBadge';
 
 const TAB_W = 88;
 const PAD = 6;
