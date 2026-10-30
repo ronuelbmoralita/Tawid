@@ -15,6 +15,7 @@ import TawidOffline from './components/tawidOffline';
 import { AppBackButton } from './AppBackButton';
 import setupNotif from './notifications/setupNotif';
 import NetInfo from '@react-native-community/netinfo';
+import Request from './screens/request/request';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -116,6 +117,11 @@ function RootStack() {
               name="Notifications"
               component={Notifications}
               options={{ title: 'Notifications', animation: 'slide_from_right' }}
+            />
+            <Stack.Screen
+              name="Request"
+              component={Request}
+              options={{ title: 'Request Activation', animation: 'slide_from_right' }}
             />
           </Stack.Group>
         </>

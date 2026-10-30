@@ -33,14 +33,7 @@ const AnimatedGraphic = ({ icon, scrollX, index }: { icon: any; scrollX: Animate
       ],
       opacity: lerp(scrollX, index, [0.4, 1, 0.4]),
     }}
-    style={{
-      width: 300,
-      height: 300,
-      overflow: 'hidden',
-      alignItems: 'center',
-      justifyContent: 'center',
-      borderRadius: 24,
-    }}>
+    style={{ width: 300, height: 300, overflow: 'hidden', alignItems: 'center', justifyContent: 'center', borderRadius: 24 }}>
     <Image source={icon} style={{ width: 300, height: 300 }} contentFit="contain" />
   </TawidCard>
 );
@@ -60,23 +53,9 @@ const PaginationDot = ({ scrollXJS, index }: { scrollXJS: Animated.Value; index:
 
 export default function Login() {
   const {
-    isReady,
-    slides,
-    hasLocation,
-    hasNotif,
-    isPermissionsGranted,
-    isFinalSlide,
-    scrollX,
-    scrollXJS,
-    slidesRef,
-    buttonWidth,
-    opacity,
-    transform,
-    scrollToNext,
-    skipToLogin,
-    requestLocationPermission,
-    requestNotificationPermission,
-    onScrollListener,
+    isReady, slides, isFinalSlide, scrollX, scrollXJS, slidesRef, buttonWidth, opacity, transform,
+    scrollToNext, skipToLogin, onScrollListener,
+    ...permission // hasLocation, hasNotif, isPermissionsGranted, request*Permission
   } = useLoginLogic();
 
   const renderOnboardingItem = ({ item, index }: { item: OnboardingItemType; index: number }) => {
@@ -98,19 +77,11 @@ export default function Login() {
             {item.title}
           </Text>
           <Text style={{ fontSize: 14, color: 'rgba(0,0,0,0.65)', lineHeight: 21, textAlign: 'center', paddingHorizontal: 8 }}>
-            {isFirstSlide && isPermissionsGranted
+            {isFirstSlide && permission.isPermissionsGranted
               ? 'A community-first digital port platform by LOOKAL bridging local port operations and passengers.'
               : item.desc}
           </Text>
-          {isFirstSlide && (
-            <LoginPermission
-              hasLocation={hasLocation}
-              hasNotif={hasNotif}
-              isPermissionsGranted={isPermissionsGranted}
-              requestLocationPermission={requestLocationPermission}
-              requestNotificationPermission={requestNotificationPermission}
-            />
-          )}
+          {isFirstSlide && <LoginPermission {...permission} />}
         </Animated.View>
       </View>
     );
@@ -120,83 +91,71 @@ export default function Login() {
   if (!isReady) return <View style={{ flex: 1, backgroundColor: colors.white }} />;
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.white }}>
-      <SafeAreaView style={{ flex: 1, backgroundColor: 'transparent' }}>
-        <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.white }}>
+      <StatusBar barStyle="dark-content" backgroundColor={colors.white} />
 
-        {/* Top Header: Skip Button - hidden on the final slide */}
-        <View style={{ height: 48, paddingHorizontal: 24, justifyContent: 'center', alignItems: 'flex-end', zIndex: 10 }}>
-          {!isFinalSlide && (
-            <TouchableOpacity onPress={skipToLogin} activeOpacity={0.7} style={{ paddingVertical: 6, paddingHorizontal: 12 }}>
-              <Text style={{ fontSize: 15, fontWeight: '600', color: colors.brand }}>Skip</Text>
-            </TouchableOpacity>
-          )}
-        </View>
+      {/* Skip button, hidden on the final slide */}
+      <View style={{ height: 48, paddingHorizontal: 24, justifyContent: 'center', alignItems: 'flex-end', zIndex: 10 }}>
+        {!isFinalSlide && (
+          <TouchableOpacity onPress={skipToLogin} activeOpacity={0.7} style={{ paddingVertical: 6, paddingHorizontal: 12 }}>
+            <Text style={{ fontSize: 15, fontWeight: '600', color: colors.brand }}>Skip</Text>
+          </TouchableOpacity>
+        )}
+      </View>
 
-        <TawidWave
-          height={200}
-          color={colors.brand}
-          opacity={0.2}
-          amplitude={40}
-          speed={4000}
-          style={{ bottom: 20, left: 0 }}
+      <TawidWave height={200} color={colors.brand} opacity={0.2} amplitude={40} speed={4000} style={{ bottom: 20, left: 0 }} />
+
+      <Animated.View style={{ flex: 1, opacity, transform }}>
+        <AnimatedFlatList
+          ref={slidesRef}
+          data={slides}
+          renderItem={renderOnboardingItem}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          pagingEnabled
+          scrollEnabled={slides.length > 1}
+          getItemLayout={getItemLayout}
+          keyExtractor={(item: any) => item.id}
+          onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
+            useNativeDriver: true,
+            listener: onScrollListener,
+          })}
+          scrollEventThrottle={16}
         />
 
-        <Animated.View style={{ flex: 1, opacity, transform }}>
-          <AnimatedFlatList
-            ref={slidesRef}
-            data={slides}
-            renderItem={renderOnboardingItem}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            pagingEnabled
-            scrollEnabled={slides.length > 1}
-            getItemLayout={getItemLayout}
-            keyExtractor={(item: any) => item.id}
-            onScroll={Animated.event([{ nativeEvent: { contentOffset: { x: scrollX } } }], {
-              useNativeDriver: true,
-              listener: onScrollListener,
-            })}
-            scrollEventThrottle={16}
-          />
-
-          {/* Bottom Footer Controls - Always visible */}
-          <View style={{ paddingVertical: 20, paddingHorizontal: 24, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            {/* View stays rendered so the button remains on the right (space-between) */}
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              {slides.length > 1 && slides.map((_, i) => <PaginationDot key={i} scrollXJS={scrollXJS} index={i} />)}
-            </View>
-
-            <TouchableOpacity activeOpacity={0.85} onPress={scrollToNext}>
-              <Animated.View
-                style={{
-                  height: 50,
-                  borderRadius: 28,
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: colors.brand,
-                  shadowColor: colors.brand,
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 8,
-                  elevation: 5,
-                  width: buttonWidth,
-                }}>
-                {isFinalSlide ? (
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
-                    <FontAwesome6 name="google" size={18} color={colors.white} iconStyle="brand" />
-                    <Text style={{ color: colors.white, fontSize: 14, fontWeight: '700', letterSpacing: 0.2 }}>
-                      Continue with Google
-                    </Text>
-                  </View>
-                ) : (
-                  <FontAwesome6 name="chevron-right" size={20} color={colors.white} iconStyle="solid" />
-                )}
-              </Animated.View>
-            </TouchableOpacity>
+        {/* Footer controls. Dots View stays rendered so the button stays on the right */}
+        <View style={{ paddingVertical: 20, paddingHorizontal: 24, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+            {slides.length > 1 && slides.map((_, i) => <PaginationDot key={i} scrollXJS={scrollXJS} index={i} />)}
           </View>
-        </Animated.View>
-      </SafeAreaView>
-    </View>
+
+          <TouchableOpacity activeOpacity={0.85} onPress={scrollToNext}>
+            <Animated.View
+              style={{
+                width: buttonWidth,
+                height: 50,
+                borderRadius: 28,
+                justifyContent: 'center',
+                alignItems: 'center',
+                backgroundColor: colors.brand,
+                shadowColor: colors.brand,
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 8,
+                elevation: 5,
+              }}>
+              {isFinalSlide ? (
+                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <FontAwesome6 name="google" size={18} color={colors.white} iconStyle="brand" />
+                  <Text style={{ color: colors.white, fontSize: 14, fontWeight: '700', letterSpacing: 0.2 }}>Continue with Google</Text>
+                </View>
+              ) : (
+                <FontAwesome6 name="chevron-right" size={20} color={colors.white} iconStyle="solid" />
+              )}
+            </Animated.View>
+          </TouchableOpacity>
+        </View>
+      </Animated.View>
+    </SafeAreaView>
   );
 }

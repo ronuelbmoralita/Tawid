@@ -10,6 +10,7 @@ import TawidCard from '../../../../components/tawidCard';
 import { useTabBarSpace } from '../../../tabStyle';
 import ScheduleSkeleton from './scheduleSkeleton';
 import BreathingDot from './scheduleBreathingDot';
+import { useNavigation } from '@react-navigation/native';
 
 interface ScheduleItem {
   vessel: string;
@@ -339,7 +340,8 @@ const Schedule: React.FC<ScheduleProps> = ({
     return () => unsub();
   }, []);
 
-  const handleRequestActivation = useCallback(() => petitionRef.current?.open(), []);
+const navigation = useNavigation<any>();
+const handleRequestActivation = useCallback(() => navigation.navigate('Request'), [navigation]);
 
   const sections = useMemo(() => {
     const sailing = schedule.filter((t) => t.status === 'Sailing');

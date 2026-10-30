@@ -1,6 +1,6 @@
 // components/ScheduleModal.tsx
 import React, { useRef, useState, forwardRef, useImperativeHandle } from 'react';
-import { View, Text, Dimensions, Alert, TextInput, ScrollView } from 'react-native';
+import { View, Text, Dimensions, Alert, TextInput } from 'react-native';
 import { Image } from 'expo-image';
 import ViewShot, { captureRef } from 'react-native-view-shot';
 import * as Sharing from 'expo-sharing';
@@ -20,6 +20,22 @@ const inputStyle = {
   fontSize: 15,
   color: '#333',
 };
+
+const COMING_SOON = [
+  ['table-columns', 'Unified LGU dashboard for walk-in and cashless'],
+  ['mobile-screen-button', 'Online seat booking'],
+  ['wallet', 'Cashless payment (GCash / Maya)'],
+  ['receipt', 'Digital receipt'],
+  ['qrcode', 'QR code scanner for conductor'],
+];
+
+const EXPLORING = [
+  ['anchor', 'More partner ports'],
+  ['language', 'Multi-language support'],
+  ['bullhorn', 'Promote local businesses through ads'],
+  ['ticket', 'Passenger vouchers from ad revenue (lower fares)'],
+  ['umbrella-beach', 'Boost coastal tourism'],
+];
 
 export type ScheduleModalRef = {
   open: () => void;
@@ -198,7 +214,7 @@ const ScheduleModalBody = ({
   onUserNameChange: (v: string) => void;
 }) => (
   <View style={{ gap: 12 }}>
-    <Text style={{ fontSize: 14, color: '#666', textAlign: 'justify', lineHeight: 22 }}>
+    <Text style={{ fontSize: 14, color: '#666', textAlign: 'left', lineHeight: 22 }}>
       Right now you can only view advisories and schedules. Booking is not available yet.
       Would you like to request activation for your port?
     </Text>
@@ -239,16 +255,21 @@ const ScheduleModalBody = ({
       }}
     >
       <Text style={{ fontSize: 13, fontWeight: '600', color: colors.black }}>
-        Unlock with Tawid:
+        Unlock with Tawid (coming soon):
       </Text>
-      {[
-        ['mobile-screen-button', 'Online Booking'],
-        ['ticket', 'Digital Tickets'],
-        ['receipt', 'Transaction History'],
-      ].map(([icon, text], i) => (
+      {COMING_SOON.map(([icon, text], i) => (
         <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <FontAwesome6 name={icon} size={13} color={colors.brand} iconStyle="solid" />
-          <Text style={{ fontSize: 13, color: '#444' }}>{text}</Text>
+          <Text style={{ flex: 1, fontSize: 13, color: '#444' }}>{text}</Text>
+        </View>
+      ))}
+      <Text style={{ fontSize: 13, fontWeight: '600', color: colors.black, marginTop: 8 }}>
+        Exploring:
+      </Text>
+      {EXPLORING.map(([icon, text], i) => (
+        <View key={i} style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+          <FontAwesome6 name={icon} size={13} color={colors.gray} iconStyle="solid" />
+          <Text style={{ flex: 1, fontSize: 13, color: '#444' }}>{text}</Text>
         </View>
       ))}
     </View>
@@ -263,34 +284,39 @@ const ScheduleModalBody = ({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        gap: 6,
+        gap: 8,
       }}
     >
-      <FontAwesome6 name="lightbulb" size={12} color={colors.brand} iconStyle="solid" />
+      <FontAwesome6 name="lightbulb" size={14} color={colors.black} iconStyle="solid" />
       <Text
         style={{
-          fontSize: 12,
-          color: colors.brand,
+          flex: 1,
+          fontSize: 13,
+          color: colors.black,
           fontWeight: '600',
-          textAlign: 'center',
+          textAlign: 'left',
+          lineHeight: 19,
         }}
       >
-        Tap "Share" to send the petition
+        Tap “Share” and send the petition to your municipal office or post it on Facebook.
       </Text>
     </View>
   </View>
 );
 
 // ============ MAIN ============
-const ScheduleModal = forwardRef<ScheduleModalRef>((_, ref) => {
+const ScheduleModal = forwardRef<ScheduleModalRef, { defaultPortName?: string }>(({ defaultPortName = '' }, ref) => {
   const viewShotRef = useRef<ViewShot>(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [sharingImage, setSharingImage] = useState(false);
-  const [portName, setPortName] = useState('');
+  const [portName, setPortName] = useState(defaultPortName);
   const [userName, setUserName] = useState('');
 
   useImperativeHandle(ref, () => ({
-    open: () => setModalVisible(true),
+    open: () => {
+      setPortName((p) => p || defaultPortName);
+      setModalVisible(true);
+    },
   }));
 
   const isFormValid = portName.trim().length > 0 && userName.trim().length > 0;
@@ -363,14 +389,12 @@ const ScheduleModal = forwardRef<ScheduleModalRef>((_, ref) => {
           },
         ]}
       >
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <ScheduleModalBody
-            portName={portName}
-            onPortNameChange={setPortName}
-            userName={userName}
-            onUserNameChange={setUserName}
-          />
-        </ScrollView>
+        <ScheduleModalBody
+          portName={portName}
+          onPortNameChange={setPortName}
+          userName={userName}
+          onUserNameChange={setUserName}
+        />
       </TawidModal>
 
       {/* Hidden ViewShot for capturing image */}
